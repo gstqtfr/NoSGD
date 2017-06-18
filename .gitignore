@@ -1,0 +1,17 @@
+target/
+lib_managed/
+src_managed/
+project/boot/
+project/project/
+project/target/
+tmp/
+.history
+.cache
+*.class
+*~
+
+# Scala-IDE specific
+
+.scala_dependencies
+.worksheet
+.idea
