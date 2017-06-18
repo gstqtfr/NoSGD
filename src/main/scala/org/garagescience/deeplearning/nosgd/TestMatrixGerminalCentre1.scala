@@ -10,7 +10,7 @@ object TestMatrixGerminalCentre1 {
   import org.garagescience.deeplearning.nosgd.mlp.MathUtils._
 
   private final val iterations = 500
-  private final val popSize = 10
+  private final val popSize = 50
   private final val poolSize = 20
 
   // this is actually a Really Hard problem! ...

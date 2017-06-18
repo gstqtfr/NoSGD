@@ -28,7 +28,14 @@ class MatrixGerminalCentre(protected val m: Matrix,
   // germinal centres apply the somatic hypermutation operator to their
   // clonal pools
 
-  def germinate: Seq[Seq[Double]] = centres.map(gc => gc.germinate)
+  protected def germinate: Seq[Seq[Double]] = centres.map(gc => gc.germinate)
+
+  protected def compareAndReplace(l1: Seq[Matrix],
+                                  l2: Seq[Matrix],
+                                  f: Matrix => Double): Seq[Matrix] =
+    l1.zip(l2).map { case (c, m) =>
+      if (f(c) < f(m)) c else m
+    }
 
   // TODO: need to look out for:
   // TODO: java.lang.IllegalArgumentException
@@ -37,12 +44,5 @@ class MatrixGerminalCentre(protected val m: Matrix,
     val _clones: Seq[Matrix] = germinate.map(xs => Matrices.dense(rows, cols, xs.toArray))
     clones = compareAndReplace(clones, _clones, f)
   }
-
-
-  def compareAndReplace(l1: Seq[Matrix], l2: Seq[Matrix], f: Matrix => Double): Seq[Matrix] =
-    l1.zip(l2).map { case (c, m) =>
-      if (f(c) < f(m)) c else m
-    }
-
 
 }
