@@ -17,9 +17,9 @@ object TestMatrixGerminalCentre1 {
 
   private final val target = Matrices.dense(3, 3,
     Array(
-      1.0, 0.0, 0.0,
-      0.0, 1.0, 0.0,
-      0.0, 0.0, 1.0
+      0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0
     )
   )
 
@@ -57,6 +57,9 @@ object TestMatrixGerminalCentre1 {
       ), poolSize)
 
     for (i <- 0 until iterations) {
+
+      // TODO: add a promise/future call here ...
+
       mgc.map(gc => gc.update(error))
 
       val cloneattack: Seq[Seq[Matrix]] = mgc.map(gc => gc.clones)

@@ -32,17 +32,21 @@ class MatrixGerminalCentre(protected val m: Matrix,
 
   protected def compareAndReplace(l1: Seq[Matrix],
                                   l2: Seq[Matrix],
-                                  f: Matrix => Double): Seq[Matrix] =
+                                  f: Matrix => Double): Seq[(Matrix, Double)] =
     l1.zip(l2).map { case (c, m) =>
-      if (f(c) < f(m)) c else m
+      val f_of_c = f(c)
+      val f_of_m = f(m)
+      if (f(c) < f(m)) (c, f_of_c) else (m, f_of_m)
     }
 
   // TODO: need to look out for:
   // TODO: java.lang.IllegalArgumentException
   // TODO: on Matrix dims ...
-  def update(f: Matrix => Double) = {
+  def update(f: Matrix => Double): Seq[Double] = {
     val _clones: Seq[Matrix] = germinate.map(xs => Matrices.dense(rows, cols, xs.toArray))
-    clones = compareAndReplace(clones, _clones, f)
+    val clonesAndFitmess: Seq[(Matrix, Double)] = compareAndReplace(clones, _clones, f)
+    clones = clonesAndFitmess.map { case (c,f) => c }
+    clonesAndFitmess.map { case (c,f) => f }
   }
 
 }
