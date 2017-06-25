@@ -58,7 +58,6 @@ object TestMatrixGerminalCentre1 {
 
     for (i <- 0 until iterations) {
 
-      // TODO: add a promise/future call here ...
 
       mgc.map(gc => gc.update(error))
 

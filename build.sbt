@@ -19,13 +19,15 @@ libraryDependencies ++= Seq(
   "joda-time"         % "joda-time"                      % "2.9.7",
   "com.github.nscala-time" % "nscala-time_2.11"          % "2.16.0",
   "log4j"             % "log4j"                          % "1.2.17",
-  "org.scalanlp"      % "breeze_2.11"                    % "0.13",
   "org.scalactic"    %% "scalactic"                      % "3.0.1",
   "org.scalatest"    %% "scalatest"                      % "3.0.1" % "test",
   "log4j"             % "log4j"                          % "1.2.17",
-  "org.scalanlp"     %% "breeze"                         % "0.9",
+  "com.typesafe.akka" % "akka-actor_2.11"                % "2.5.3",
+  "org.scalanlp"     %% "breeze"                         % "0.13",
   "org.scalanlp"     %% "breeze-config"                  % "0.9.1",
-  "org.scalanlp"     %% "breeze-natives"                 % "0.8" % "test, runtime"
+  //"org.scalanlp"     %% "breeze-config"                  % "0.13",
+  //"org.scalanlp"     %% "breeze-natives"                 % "0.8" % "test, runtime"
+  "org.scalanlp"     %% "breeze-natives"                 % "0.13" % "test, runtime"
 )
 
 test in assembly := {}

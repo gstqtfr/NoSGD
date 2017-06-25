@@ -1,12 +1,14 @@
 package org.garagescience.deeplearning.nosgd
 
 import org.apache.spark.ml.linalg.{Matrices, Matrix}
-
 import scala.collection.immutable.Seq
 import scala.concurrent.{Await, ExecutionContext, Future}
 import scala.util.{Failure, Success, Try}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.Duration
+
+// TODO: this is all bollox
+// TODO: doesn't fucking work
 
 // notes on Promise & Future
 
@@ -63,7 +65,11 @@ object TestFuturesBasedGC1 {
 
   private def error2(m1: Matrix): Double = (target - m1).abs.toArray.sum
 
-  private def error(m1: Matrix): Double = {
+  private def getRMSE(xs: Seq[Double])(implicit ec: ExecutionContext): Double =
+    Math.sqrt(Math.pow(Math.abs(xs.sum / popSize), 2.0))
+
+  private def error(m1: Matrix)
+                   (implicit ec: ExecutionContext): Double = {
     val f = Future(
       Math.sqrt(
         Math.pow(Math.abs((for {i <- 0 until target.numRows
@@ -74,23 +80,61 @@ object TestFuturesBasedGC1 {
     Await.result(f, Duration.Inf)
   }
 
-  private def getRMSE(xs: Seq[Double])(implicit ec: ExecutionContext): Double =
-      Math.sqrt(Math.pow(Math.abs(xs.sum / popSize), 2.0))
 
   /*
-  def sequence[A](list: List[Future[A]])
-                 (implicit ec: ExecutionContext): Future[List[A]] = {
-    val seed = Future.successful(List.empty[A])
-    list.foldLeft(seed)((acc,f) => for (l <- acc; a <- f) yield a :: l)
-      .map(_.reverse)
+
+val f = future {
+   produceSomething()
+}
+
+val producer = future {
+   continueDoingSomethingUnrelated()
+}
+
+startDoingSomething()
+
+val consumer = future {
+  f onSuccess {
+    case r => doSomethingWithResult()
   }
-  */
+}
+
+   */
+
+  val doComplete: PartialFunction[Try[Double], Unit] = {
+    case s@Success(_) => println(s)
+    case f@Failure(_) => println(f)
+  }
+
+
+  val getSeq:PartialFunction[Try[Seq[Double]], Seq[Double]] = {
+    case s @ Success(_) => s.get
+    case f @ Failure(_) => Seq(0.0)
+  }
+
 
   private def getUpdate(m: MatrixGerminalCentre)
                        (f: Matrix => Double)
-                       (implicit ec: ExecutionContext): Seq[Double] = {
-    val future = Future(m.update(f))
-    Await.result(future, Duration.Inf)
+                       (implicit ec: ExecutionContext) = {
+
+    val future = Future {
+
+      m.update(f)
+
+      } onComplete {
+      // here we get the error
+      case s @ Success(_) =>
+        val xs: Seq[Double] = s.get
+        // xs.map(_m => error(_m))
+    }
+
+    // val future = Future(m.update(f))
+    //Await.result(future, Duration.Inf)
+    /*future.onComplete {
+      case Success(xs) => xs
+      case Failure(e) => Seq(0.0)
+    }*/
+
   }
 
 
@@ -106,92 +150,30 @@ object TestFuturesBasedGC1 {
     // TODO: Futures/Promises
     for (i <- 0 until iterations) {
 
-      mgc.map((gc: MatrixGerminalCentre) =>
-        getUpdate(m = gc)(f = error)).foreach { result => println(s"Result: $result") }
+      mgc.map(gc => getUpdate(m = gc)(f = error))
 
-      /*
-      val errors: Seq[Seq[Future[Double]]] = mgc.map(gc => gc.clones).
-        map(xs => xs.map(d => error(d)))
-      */
-
-
-      /*
-      mgc.map(gc => gc.clones).
-        map(xs => xs.map(d => error(d))).foreach { f =>
-        f.onComplete { result => println(s"Result: $result") }
-
-      }
-     */
-
-
-      val doComplete: PartialFunction[Try[Double], Unit] = {
-        case s@Success(_) => println(s)
-        case f@Failure(_) => println(f)
+      Future {
+        mgc.
+          map((gc: MatrixGerminalCentre) => gc.clones).
+          map((xs: Seq[Matrix]) => xs.map(error(_)))
+      } onComplete {
+        case s@Success(_) =>
+          s.get.map(xs => println(s"$i ${getRMSE(xs)}"))
+        case f@Failure(_) => println("ooh-er, missus ...")
       }
 
-
-      val getSeq:PartialFunction[Try[Seq[Double]], Seq[Double]] = {
-        case s @ Success(_) => s.get
-        case f @ Failure(_) => Seq(0.0)
-      }
-
-
-      // futures map (_ onComplete doComplete)
-
-      /*
-      def getRMSE(fxs: Seq[Future[Double]])(implicit ec: ExecutionContext): Future[Double] = {
-        val xs: Seq[PartialFunction[Try[Seq[Double]], Seq[Double]]] = fxs.map(e => getSeq)
-        // Future(Math.sqrt(Math.pow(Math.abs(xs.sum / popSize), 2.0)))
-
-      }
-      */
-
-      //val errorFutures: Seq[Seq[Future[Double]]] = mgc.map(gc => gc.clones).
-      //  map(xs => xs.map((d: Matrix) => error(d)))
-
-
-      // TODO: this needs to be inverted - we want a Future[Seq[Double]]!!!
-
-      val errors: Seq[Seq[Double]] = mgc.
-        map((gc: MatrixGerminalCentre) => gc.clones).
-        map((xs: Seq[Matrix]) => xs.map(error(_)))
-
-
-
-      //errorFutures map (_ onComplete doComplete)
-
-
-
-
-      /*
-            errors.foreach { xs => xs.foreach { f =>
-              f.onComplete { _try => _try match {
-                case Success(result) => println(s"$i ${getRMSE(result)}")
-              }
-              }
-              }
-            }
-      */
-
-      errors.foreach(xs => println(s"$i ${getRMSE(xs)}"))
-      println()
-
-      // TODO: this needs to be future'd
-      //  mgc.map(gc => gc.update(error))
-
-
-      // TODO: this sort of thig:
-      // def timesFourInParallel(n: Int)(implicit ec: ExecutionContext): Future[Int] =
-      //     Future.sequence(timesTwo(n) :: timesTwo(n) :: Nil).map(_.sum)
-
-
-      /*
-      // TODO: this style of thing ...
-      // fa.flatMap(a => fb.map(b => a + b))
-       */
-
+      //errors.foreach((xs: Seq[Double]) => println(s"$i ${getRMSE(xs)}"))
 
     }
+
+    val cloneattack: Seq[Seq[Matrix]] = mgc.map(gc => gc.clones).
+      map(xsm => xsm.map(xs => Matrices.dense(target.numRows, target.numRows, xs.toArray)))
+
+    cloneattack.foreach { xs =>
+      xs.foreach(m => println(s"$m\n"))
+      println()
+    }
+
 
   }
 
