@@ -15,12 +15,14 @@ class GerminalCentreController(m: Matrix,
 
   private[this] var count = 0
   private[this] val log = Logging(context.system, this)
-  private[this] def incrementAndPrint { count += 1; println(s"${self.path} $count") }
-
+  private[this] def incrementAndPrint {
+    count += 1;
+    println(s"${self.path} $count")
+  }
   private[this] def getTolerance(xs: TSeq[Double],
-                                 epsilon: Double=0.01) = Math.abs(xs.sum) <= epsilon
-
-  def killEverything(): Unit = context.system.terminate()
+                                 epsilon: Double=0.01) = errorTerm(xs) <= epsilon
+  private[this] def errorTerm(xs: TSeq[Double]) = xs.map(e=>Math.abs(e)).sum
+  private[this] def killEverything(): Unit = context.system.terminate()
 
   def receive = {
 
@@ -35,10 +37,11 @@ class GerminalCentreController(m: Matrix,
 
     case ErrorsGC(xs: TSeq[Double]) =>
       log.info(s"${self.path} received ErrorsGC")
-      log.info(s"$self.path} errors: ${xs}")
+      log.info(s"${self.path} errors: ${xs}")
+      log.info(s"${self.path} error term: ${errorTerm(xs)}")
       // TODO: how do we terminate?!?!
-      //if (getTolerance(xs)) {
-      if (count == iterations) {
+      if (getTolerance(xs)) {
+      //if (count == iterations) {
         gca ! FinalWhistle
         log.info(s"${self.path} killing gca")
         log.info(s"${self.path} committing suicide")
