@@ -8,7 +8,6 @@ import org.garagescience.deeplearning.nosgd._
 import scala.collection.immutable.{Seq => TSeq}
 
 class GerminalCentreController(m: Matrix,
-                               error: Matrix => Double,
                                gca: ActorRef,
                                iterations: Int = 100) extends Actor {
 
@@ -58,8 +57,6 @@ class GerminalCentreController(m: Matrix,
       killEverything()
 
 
-
-
     case _ =>
       log.info(s"${self.path} received unknown message from ${sender}")
   }
@@ -68,6 +65,15 @@ class GerminalCentreController(m: Matrix,
 
 object GerminalCentreController {
 
+  /*
   def props(matrix: Matrix, error: Matrix => Double, p: ActorRef): Props =
     Props(new GerminalCentreController(matrix, error, p, 1000))
+    */
+
+  def props(matrix: Matrix, p: ActorRef, iterations: Int): Props =
+    Props(new GerminalCentreController(matrix, p, iterations))
+
+  def props(matrix: Matrix, p: ActorRef): Props =
+    Props(new GerminalCentreController(matrix, p, 1000))
+
 }
