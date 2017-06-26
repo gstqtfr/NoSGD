@@ -5,7 +5,6 @@ import akka.event.Logging
 import org.apache.spark.ml.linalg.Matrix
 import org.garagescience.deeplearning.nosgd.{FinalWhistle, GetErrorsGC, GetUpdateGC}
 import org.garagescience.deeplearning.nosgd.{AckUpdateGC, ErrorsGC, KickOff}
-
 import scala.collection.immutable.{Seq => TSeq}
 
 class GerminalCentreController(m: Matrix,
@@ -15,14 +14,14 @@ class GerminalCentreController(m: Matrix,
 
   private[this] var count = 0
   private[this] val log = Logging(context.system, this)
-  private[this] def incrementAndPrint {
-    count += 1;
-    println(s"${self.path} $count")
-  }
-  private[this] def getTolerance(xs: TSeq[Double],
+  private[this] def incrementAndPrint { count += 1; println(s"${self.path} $count") }
+  private[this] def getToleranceOfList(xs: TSeq[Double],
                                  epsilon: Double=0.01) = errorTerm(xs) <= epsilon
+  private[this] def getBestTolerance(xs: TSeq[Double],
+                                     epsilon: Double=0.01) = getMinimum(xs) <= epsilon
   private[this] def errorTerm(xs: TSeq[Double]) = xs.map(e=>Math.abs(e)).sum
   private[this] def killEverything(): Unit = context.system.terminate()
+  private[this] def getMinimum(xs: TSeq[Double]) = xs.min
 
   def receive = {
 
@@ -38,9 +37,9 @@ class GerminalCentreController(m: Matrix,
     case ErrorsGC(xs: TSeq[Double]) =>
       log.info(s"${self.path} received ErrorsGC")
       log.info(s"${self.path} errors: ${xs}")
-      log.info(s"${self.path} error term: ${errorTerm(xs)}")
+      log.info(s"${self.path} error term: ${count} : ${getMinimum(xs)}")
       // TODO: how do we terminate?!?!
-      if (getTolerance(xs)) {
+      if (getBestTolerance(xs)) {
       //if (count == iterations) {
         gca ! FinalWhistle
         log.info(s"${self.path} killing gca")

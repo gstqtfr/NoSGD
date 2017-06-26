@@ -8,12 +8,17 @@ import org.garagescience.deeplearning.nosgd._
 import scala.collection.immutable.Seq
 import scala.language.postfixOps
 
+// TODO: type parameterise this code!!! Matrix=>T
+
 class GerminaCentreActor(m: Matrix, error: Matrix => Double) extends Actor {
 
+  // TODO: this'll be problematic for type param, unless we pass it in
+  // TODO: as a param to the ctor ...
   private val gc = new MatrixGerminalCentre(m)
   private val log = Logging(context.system, this)
 
   def receive = {
+
     case GetUpdateGC =>
       log.info(s"${self.path} received UpdateGC")
       gc.update(error)

@@ -7,7 +7,7 @@ import org.apache.spark.ml.linalg.{Matrices, Matrix, Vector, Vectors}
 // TODO: I'M NOT FUCKING KIDDING!!! this MUST BE PARAMETERISED!!!
 
 class MatrixGerminalCentre(protected val m: Matrix,
-                           protected val popSize: Int = 10,
+                           //protected val popSize: Int = 10,
                            protected val poolSize: Int = 20) extends Hypermutate {
 
   import Matrix2BinarySeq._
@@ -16,11 +16,10 @@ class MatrixGerminalCentre(protected val m: Matrix,
   val cols = m.numCols
 
   // create our clonal pool (var?!)
-  var clones: Seq[Matrix] = for {i <- 0 until popSize} yield m
+  var clones: Seq[Matrix] = for {i <- 0 until poolSize} yield m
 
-  // TODO: so ... how do we build this for a Matrix?
   // initialise our germinal centres
-  val centres: Seq[DoubleGerminalCentre] = for {i <- 0 until popSize
+  val centres: Seq[DoubleGerminalCentre] = for {i <- 0 until poolSize
                      row <- 0 until rows
                      col <- 0 until cols}
     yield new DoubleGerminalCentre(m(row, col), rows * cols)
