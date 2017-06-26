@@ -84,5 +84,8 @@ object GCController {
     gcc ! KickOff
 
 
+
+    //system.terminate()
+
   }
 }

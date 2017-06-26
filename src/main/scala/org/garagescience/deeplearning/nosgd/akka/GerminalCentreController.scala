@@ -18,7 +18,9 @@ class GerminalCentreController(m: Matrix,
   private[this] def incrementAndPrint { count += 1; println(s"${self.path} $count") }
 
   private[this] def getTolerance(xs: TSeq[Double],
-                                 epsilon: Double=0.1) = Math.abs(xs.sum) >= epsilon
+                                 epsilon: Double=0.01) = Math.abs(xs.sum) <= epsilon
+
+  def killEverything(): Unit = context.system.terminate()
 
   def receive = {
 
@@ -33,15 +35,18 @@ class GerminalCentreController(m: Matrix,
 
     case ErrorsGC(xs: TSeq[Double]) =>
       log.info(s"${self.path} received ErrorsGC")
-      log.info(s"$self.path} errors: xs")
+      log.info(s"$self.path} errors: ${xs}")
       // TODO: how do we terminate?!?!
-      if (getTolerance(xs)) {
-      //if (count == iterations) {
+      //if (getTolerance(xs)) {
+      if (count == iterations) {
         gca ! FinalWhistle
         log.info(s"${self.path} killing gca")
         log.info(s"${self.path} committing suicide")
         context.stop(gca)
         context.stop(self)
+        log.info(s"${self.path} killing everything ...")
+        killEverything()
+
       }
       else
         gca ! GetUpdateGC
@@ -55,5 +60,5 @@ class GerminalCentreController(m: Matrix,
 object GerminalCentreController {
 
   def props(matrix: Matrix, error: Matrix => Double, p: ActorRef): Props =
-    Props(new GerminalCentreController(matrix, error, p, 100))
+    Props(new GerminalCentreController(matrix, error, p, 1000))
 }
