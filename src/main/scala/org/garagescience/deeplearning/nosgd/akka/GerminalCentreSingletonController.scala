@@ -4,23 +4,18 @@ import akka.actor.{Actor, ActorRef, Props}
 import akka.event.Logging
 import org.apache.spark.ml.linalg.Matrix
 import org.garagescience.deeplearning.nosgd._
-
 import scala.collection.immutable.{Seq => TSeq}
 
-class GerminalCentreController(m: Matrix,
-                               gca: ActorRef,
-                               iterations: Int = 100) extends Actor {
 
-  private[this] var count = 0
-  private[this] val log = Logging(context.system, this)
-  private[this] def incrementAndPrint { count += 1; println(s"${self.path} $count") }
-  private[this] def getToleranceOfList(xs: TSeq[Double],
-                                 epsilon: Double=0.01) = errorTerm(xs) <= epsilon
-  private[this] def getBestTolerance(xs: TSeq[Double],
-                                     epsilon: Double=0.01) = getMinimum(xs) <= epsilon
-  private[this] def errorTerm(xs: TSeq[Double]) = xs.map(e=>Math.abs(e)).sum
-  private[this] def killEverything(): Unit = context.system.terminate()
-  private[this] def getMinimum(xs: TSeq[Double]) = xs.min
+// TODO: MAKE THIS GENERIC!!!
+// TODO: there is *no* *reason* i can see that this can't be
+// TODO: type parameterised, so LET'S DO IT!!!
+// TODO: ... but not just yet ...
+
+class GerminalCentreSingletonController(m: Matrix,
+                                        gca: ActorRef,
+                                        iterations: Int = 100,
+                                        epsilon: Double = 0.01) extends ThinController(epsilon) {
 
   def receive = {
 
@@ -53,7 +48,7 @@ class GerminalCentreController(m: Matrix,
       log.info(s"${self.path} committing suicide")
       context.stop(gca)
       context.stop(self)
-      log.info(s"${self.path} killing everything ...")
+      log.info(s"${self.path} killing everything! kill! kill! kill!!! ...")
       killEverything()
 
 
@@ -63,7 +58,7 @@ class GerminalCentreController(m: Matrix,
 
 }
 
-object GerminalCentreController {
+object GerminalCentreSingletonController {
 
   /*
   def props(matrix: Matrix, error: Matrix => Double, p: ActorRef): Props =
@@ -71,9 +66,9 @@ object GerminalCentreController {
     */
 
   def props(matrix: Matrix, p: ActorRef, iterations: Int): Props =
-    Props(new GerminalCentreController(matrix, p, iterations))
+    Props(new GerminalCentreSingletonController(matrix, p, iterations))
 
   def props(matrix: Matrix, p: ActorRef): Props =
-    Props(new GerminalCentreController(matrix, p, 1000))
+    Props(new GerminalCentreSingletonController(matrix, p, 1000))
 
 }
