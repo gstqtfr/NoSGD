@@ -38,14 +38,18 @@ class MatrixGerminalCentre(protected val m: Matrix,
       if (f(c) < f(m)) (c, f_of_c) else (m, f_of_m)
     }
 
+  def getFittest(f: Matrix => Double): Seq[Matrix] = {
+    clones.sortWith { case (a,b) => f(a) < f(b) }
+  }
+
   // TODO: need to look out for:
   // TODO: java.lang.IllegalArgumentException
   // TODO: on Matrix dims ...
   def update(f: Matrix => Double): Seq[Double] = {
     val _clones: Seq[Matrix] = germinate.map(xs => Matrices.dense(rows, cols, xs.toArray))
-    val clonesAndFitmess: Seq[(Matrix, Double)] = compareAndReplace(clones, _clones, f)
-    clones = clonesAndFitmess.map { case (c,f) => c }
-    clonesAndFitmess.map { case (c,f) => f }
+    val clonesAndFitness: Seq[(Matrix, Double)] = compareAndReplace(clones, _clones, f)
+    clones = clonesAndFitness.map { case (c,f) => c }
+    clonesAndFitness.map { case (c,f) => f }
   }
 
 }

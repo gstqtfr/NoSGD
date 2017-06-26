@@ -3,8 +3,8 @@ package org.garagescience.deeplearning.nosgd.akka
 import akka.actor.{Actor, ActorRef, Props}
 import akka.event.Logging
 import org.apache.spark.ml.linalg.Matrix
-import org.garagescience.deeplearning.nosgd.{FinalWhistle, GetErrorsGC, GetUpdateGC}
-import org.garagescience.deeplearning.nosgd.{AckUpdateGC, ErrorsGC, KickOff}
+import org.garagescience.deeplearning.nosgd._
+
 import scala.collection.immutable.{Seq => TSeq}
 
 class GerminalCentreController(m: Matrix,
@@ -38,20 +38,27 @@ class GerminalCentreController(m: Matrix,
       log.info(s"${self.path} received ErrorsGC")
       log.info(s"${self.path} errors: ${xs}")
       log.info(s"${self.path} error term: ${count} : ${getMinimum(xs)}")
-      // TODO: how do we terminate?!?!
+      // could also do if (count == iterations) here ...
       if (getBestTolerance(xs)) {
-      //if (count == iterations) {
-        gca ! FinalWhistle
-        log.info(s"${self.path} killing gca")
-        log.info(s"${self.path} committing suicide")
-        context.stop(gca)
-        context.stop(self)
-        log.info(s"${self.path} killing everything ...")
-        killEverything()
-
+        log.info(s"${self.path} getting best matrix from gca")
+        gca ! GetMinimumGC
       }
       else
         gca ! GetUpdateGC
+
+
+    case MinimumGC(m) =>
+      log.info(s"${self.path}: best matrix is: ${m}")
+      gca ! FinalWhistle
+      log.info(s"${self.path} killing gca")
+      log.info(s"${self.path} committing suicide")
+      context.stop(gca)
+      context.stop(self)
+      log.info(s"${self.path} killing everything ...")
+      killEverything()
+
+
+
 
     case _ =>
       log.info(s"${self.path} received unknown message from ${sender}")

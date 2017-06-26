@@ -26,10 +26,15 @@ class GerminaCentreActor(m: Matrix, error: Matrix => Double) extends Actor {
 
     case GetErrorsGC =>
       log.info(s"${self.path} received ErrorsGC")
-      // TODO: send this to the caller (return to sender!)
       val errors: Seq[Double] = gc.clones.map(xs => error(xs))
       log.info(s"${self.path} errors: $errors")
       sender ! ErrorsGC(errors)
+
+    case GetMinimumGC =>
+      log.info(s"${self.path} received GetMinimumGC")
+      val _m = gc.getFittest(error).head
+      sender ! MinimumGC(_m)
+
 
     case FinalWhistle =>
       log.info(s"${self.path} received FinalWhistle, shutting down")
