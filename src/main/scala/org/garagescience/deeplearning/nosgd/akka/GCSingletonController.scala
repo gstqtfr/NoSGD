@@ -68,13 +68,13 @@ object GCSingletonController {
     val system = ActorSystem("TestGCActorSytem")
 
 
-    val init = randomMatrix(
+    def init = randomMatrix(
       target.numRows,
         target.numCols,
         target.toArray.length)
 
     val gca: ActorRef = system.
-      actorOf(GerminaCentreActor.props(init, error),
+      actorOf(GerminalCentreActor.props(init, error),
         name = "gca")
 
     val gcc: ActorRef = system.

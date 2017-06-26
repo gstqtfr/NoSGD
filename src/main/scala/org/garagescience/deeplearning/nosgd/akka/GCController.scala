@@ -22,7 +22,6 @@ class GCController(m: Matrix,
       case h :: t =>
         h ! _msg
         _sendToAll(_msg, t)
-
     }
 
     _sendToAll(msg, actor)
@@ -86,5 +85,14 @@ class GCController(m: Matrix,
 
   }
 
+}
+
+object GCController {
+
+  def props(matrix: Matrix, l: List[ActorRef]): Props =
+    Props(new GCController(matrix, l))
+
+  def props(matrix: Matrix, l: List[ActorRef], e: Double): Props =
+    Props(new GCController(matrix, l, e))
 
 }
