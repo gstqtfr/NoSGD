@@ -7,11 +7,14 @@ import org.apache.spark.ml.linalg.{Matrices, Matrix}
 import org.garagescience.deeplearning.nosgd.{AckUpdateGC, _}
 import scala.collection.immutable.{Seq => TSeq}
 import scala.language.postfixOps
+import scala.util.Random
 
 object GCMultipleController {
 
+  private val r = new scala.util.Random
+
   private def randomMatrix(rows: Int, cols: Int, sz: Int) = {
-    val tmpArray = for {i <- 0 until sz} yield scala.util.Random.nextGaussian
+    val tmpArray = for {i <- 0 until sz} yield r.nextGaussian
     Matrices.dense(rows, cols, tmpArray.toArray)
   }
 
@@ -37,6 +40,7 @@ object GCMultipleController {
   }
 
   private final val popSz = 10
+  private final val epsilon = 0.00000001
 
   def main(args: Array[String]): Unit = {
 
@@ -45,15 +49,12 @@ object GCMultipleController {
       target.numCols,
       target.toArray.length)
 
-
-
     val system = ActorSystem("TestGCmultipleActorSytem")
 
     val gcl: List[ActorRef] = {for {i <- 0 until popSz} yield creatActor(system, init, error)}.toList
 
-
     val gcc: ActorRef = system.
-      actorOf(GCController.props(target, gcl),
+      actorOf(GCController.props(target, gcl, epsilon),
         name = "gcl")
 
 

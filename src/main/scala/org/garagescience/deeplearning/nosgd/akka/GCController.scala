@@ -55,12 +55,12 @@ class GCController(m: Matrix,
 
 
     case ErrorsGC(xs: TSeq[Double]) =>
-      log.info(s"${self.path} received ErrorsGC")
-      log.info(s"${self.path} errors: ${xs}")
-      log.info(s"${self.path} error term: ${count} : ${getMinimum(xs)}")
+      log.info(s"${self.path} ${count} received ErrorsGC")
+      log.info(s"${self.path} ${count} errors: ${xs}")
+      log.info(s"${self.path} ${count} error term: ${count} : ${getMinimum(xs)}")
       // could also do if (count == iterations) here ...
       if (getBestTolerance(xs)) {
-        log.info(s"${self.path} getting best matrix from gca")
+        log.info(s"${self.path} ${count} getting best matrix from gca")
         sender ! GetMinimumGC
       }
       else
@@ -68,16 +68,15 @@ class GCController(m: Matrix,
 
 
     case MinimumGC(m) =>
-      log.info(s"${self.path}: best matrix is: ${m}")
-      sender ! FinalWhistle
-      log.info(s"${self.path} killing gca")
-      log.info(s"${self.path} committing suicide")
-      // TODO: need a way to kill everything here ...
-      //context.stop(gca)
-      killAllTheOthers(gcl)
-      context.stop(self)
-      log.info(s"${self.path} killing everything! kill! kill! kill!!! ...")
+      log.info(s"${self.path}: ${count} best matrix is:\n${m}")
+      sendToAll(FinalWhistle, gcl)
+      log.info(s"${self.path} ${count} killing actors")
+      //killAllTheOthers(gcl)
+      log.info(s"${self.path} ${count} killing everything! kill! kill! kill!!! ...")
       killEverything()
+      log.info(s"${self.path} ${count} committing suicide - goodbye cruel world ...")
+      context.stop(self)
+
 
 
     case _ =>
