@@ -17,38 +17,10 @@ class FeedForwardNeuralNetwork( _neuronCounts: Seq[Int],
                                 val gamma: Double,
                                 override val useBias: Boolean = true)
   extends _NeuralNetwork(_neuronCounts = _neuronCounts, useBias = useBias) {
-  
+
   def activationFunction = _activationFunction
 
-  //val layerCount = _neuronCounts.size
-  //private val M = layerCount - 1
-
-  /**
-    * the neuron counts given in the constructor adjusted to account for the bias neurons
-    */
-  // val neuronCounts: Seq[Int] = _neuronCounts.map( _ + 1).updated(M, _neuronCounts.last)
-
-
-  /**
-    * neuron state vectors
-    */
-  val V: Buffer[DenseVector[Double]] =
-    (neuronCounts map { layerCount => DenseVector.ones[Double](layerCount)}).toBuffer
-
-  /**
-    * activation vectors
-    */
-  val h: Buffer[DenseVector[Double]] =
-    (neuronCounts map { layerCount => DenseVector.ones[Double](layerCount)}).toBuffer
-
-
-  /**
-    * errors
-    */
-  val delta: Buffer[DenseVector[Double]] =
-    (neuronCounts map { layerCount => DenseVector.ones[Double](layerCount)}).toBuffer
-  delta(0) *= 0.0
-
+  /*
   private val _w: Iterator[DenseMatrix[Double]] =
     for(ns <- neuronCounts.sliding(2)) yield {
       assert(ns.length == 2)
@@ -64,6 +36,7 @@ class FeedForwardNeuralNetwork( _neuronCounts: Seq[Int],
     * the sum (of influences) for i+1 can be calculated by w(i) * V(i) [matrix multiplication]
     */
   val w: Buffer[DenseMatrix[Double]] = _w.toBuffer
+  */
 
   def getMaxDelta(): Double = delta.tail.map(_.map(abs(_)).max).max
 

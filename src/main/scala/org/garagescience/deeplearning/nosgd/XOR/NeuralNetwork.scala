@@ -1,5 +1,9 @@
 package org.garagescience.deeplearning.nosgd.XOR
 
+import breeze.linalg.{DenseMatrix, DenseVector}
+
+import scala.collection.mutable.Buffer
+
 /**
   * a common trait for all neural networks. All inheriting classes need to implement
   * [[org.garagescience.deeplearning.nosgd.XOR!teachImpl]]
@@ -112,6 +116,45 @@ abstract class _NeuralNetwork(_neuronCounts: Seq[Int],
     * the neuron counts given in the constructor adjusted to account for the bias neurons
     */
   protected val neuronCounts: Seq[Int] = _neuronCounts.map( _ + 1).updated(M, _neuronCounts.last)
+
+
+
+  /**
+    * neuron state vectors
+    */
+  protected val V: Buffer[DenseVector[Double]] =
+  (neuronCounts map { layerCount => DenseVector.ones[Double](layerCount)}).toBuffer
+
+  /**
+    * activation vectors
+    */
+  protected val h: Buffer[DenseVector[Double]] =
+  (neuronCounts map { layerCount => DenseVector.ones[Double](layerCount)}).toBuffer
+
+
+  /**
+    * errors
+    */
+  protected val delta: Buffer[DenseVector[Double]] =
+  (neuronCounts map { layerCount => DenseVector.ones[Double](layerCount)}).toBuffer
+
+  delta(0) *= 0.0
+
+  private val _w: Iterator[DenseMatrix[Double]] =
+    for(ns <- neuronCounts.sliding(2)) yield {
+      assert(ns.length == 2)
+      val prevSize = ns.head
+      val nextSize = ns.last
+      //random weights at the beginning
+      DenseMatrix.rand(nextSize, prevSize).map(x => 2.0 * MAX_ABSOLUTE_WEIGHT_VALUE * x - 1.0)
+    }
+
+  /**
+    * (layerCount - 1) matrices of connection weights between layers
+    *
+    * the sum (of influences) for i+1 can be calculated by w(i) * V(i) [matrix multiplication]
+    */
+  val w: Buffer[DenseMatrix[Double]] = _w.toBuffer
 
 
 }
