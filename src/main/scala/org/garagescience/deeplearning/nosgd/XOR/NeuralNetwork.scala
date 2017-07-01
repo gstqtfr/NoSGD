@@ -10,8 +10,6 @@ trait NeuralNetwork {
   private val oob: String =
     "The `teach` and `classify` vectors' arguments' values should be within bounds of activationFunction"
 
-
-
   def activationFunction: ActivationFunction
 
   /**
@@ -29,6 +27,7 @@ trait NeuralNetwork {
     *              to get the
     *              class the example has been classified to you have to adequately round the values, eg. using
     *              [[org.garagescience.deeplearning.nosgd.XOR.ActivationFunction]]'s methods */
+
   def classify(input: Seq[Double]): Seq[Double] = {
     require(input.forall(activationFunction.withinBounds(_)), oob)
 
@@ -45,10 +44,11 @@ trait NeuralNetwork {
   /**
     * wraps the `teachImpl` method with bounds check.
     *
-    * @param input         a sequence of Doubles - the vector being classified. Note: This method will make sure the values are
-    *                      within the bounds defined by the `activationFunction`
+    * @param input a sequence of Doubles - the vector being classified. Note: This method will make sure the values are
+    * within the bounds defined by the `activationFunction`
+    *
     * @param desiredResult the sequence - vector of Doubles the input should be classified as. This parameter will also
-    *                      be verfied for being within the bounds defined by `activationFunction`
+    * be verfied for being within the bounds defined by `activationFunction`
     */
   def train(input: Seq[Double], desiredResult: Seq[Double]): Unit = {
     assert(input.forall(activationFunction.withinBounds(_)), oob)
@@ -112,5 +112,6 @@ abstract class _NeuralNetwork(_neuronCounts: Seq[Int],
     * the neuron counts given in the constructor adjusted to account for the bias neurons
     */
   protected val neuronCounts: Seq[Int] = _neuronCounts.map( _ + 1).updated(M, _neuronCounts.last)
+
 
 }

@@ -11,6 +11,7 @@ import org.garagescience.deeplearning.nosgd.XOR.SigmoidFunction
 import org.garagescience.deeplearning.nosgd.XOR.FeedForwardNeuralNetwork
 import org.garagescience.deeplearning.nosgd.XOR.NeuralNetwork
 
+
 object Runner {
 
   import Helpers._

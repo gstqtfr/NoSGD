@@ -3,6 +3,8 @@ package org.garagescience.deeplearning.nosgd.XOR
 import scala.collection.mutable.Buffer
 import breeze.linalg.{DenseMatrix, DenseVector, max}
 import math.abs
+import org.garagescience.deeplearning.nosgd._
+
 
 /**
   * layerCounts describes the number of neurons in each layer
@@ -12,46 +14,46 @@ import math.abs
   * beta - steepness of the sigmoid function
   * @param gamma - scaling parameter of corrections - the "learning rate" parameter
   */
-class FeedForwardNeuralNetwork( _neuronCounts: Seq[Int],
-                                _activationFunction: ActivationFunction,
-                                val gamma: Double,
-                                override val useBias: Boolean = true)
-  extends _NeuralNetwork(_neuronCounts = _neuronCounts, useBias = useBias) {
+// TODO: so we *NEED* these params?
+// TODO: need to do a *lot* of refactoring on both classes
+class SomHypeNeuralNetwork( _neuronCounts: Seq[Int],
+                            _activationFunction: ActivationFunction,
+                            val gamma: Double,
+                            val useBias: Boolean = true) extends NeuralNetwork {
 
-  /*
+  // FIXME: something to consider here: do we *need* to adapt the bias terms?
+  // FIXME: or can we leave them? in which case we just adapt the weights!
+  // FIXME: which'll leave us just matrices & simplify the code
   private val BIAS_VALUE: Double = if(useBias) 1.0 else 0.0
   private val MAX_ABSOLUTE_WEIGHT_VALUE: Double = 1.0
-  */
 
-  def activationFunction = _activationFunction
+  def activationFunction: ActivationFunction = _activationFunction
 
-  //val layerCount = _neuronCounts.size
-  //private val M = layerCount - 1
+  val layerCount = _neuronCounts.size
+  private val M = layerCount - 1
 
   /**
     * the neuron counts given in the constructor adjusted to account for the bias neurons
     */
-  // val neuronCounts: Seq[Int] = _neuronCounts.map( _ + 1).updated(M, _neuronCounts.last)
-
+  val neuronCounts: Seq[Int] = _neuronCounts.map( _ + 1).updated(M, _neuronCounts.last)
 
   /**
     * neuron state vectors
     */
   val V: Buffer[DenseVector[Double]] =
-    (neuronCounts map { layerCount => DenseVector.ones[Double](layerCount)}).toBuffer
+  (neuronCounts map { layerCount => DenseVector.ones[Double](layerCount)}).toBuffer
 
   /**
     * activation vectors
     */
   val h: Buffer[DenseVector[Double]] =
-    (neuronCounts map { layerCount => DenseVector.ones[Double](layerCount)}).toBuffer
-
+  (neuronCounts map { layerCount => DenseVector.ones[Double](layerCount)}).toBuffer
 
   /**
     * errors
     */
   val delta: Buffer[DenseVector[Double]] =
-    (neuronCounts map { layerCount => DenseVector.ones[Double](layerCount)}).toBuffer
+  (neuronCounts map { layerCount => DenseVector.ones[Double](layerCount)}).toBuffer
   delta(0) *= 0.0
 
   private val _w: Iterator[DenseMatrix[Double]] =
@@ -114,4 +116,7 @@ class FeedForwardNeuralNetwork( _neuronCounts: Seq[Int],
       w(m-1) := w(m-1) + weightAdjustments
     }
   }
-}
+
+
+                            }
+
