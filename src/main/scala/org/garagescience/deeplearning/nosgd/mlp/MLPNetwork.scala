@@ -19,6 +19,8 @@ trait MLPNetwork {
 
   def getBiases: Seq[Vector] = layers.map(l => l.bias).toSeq
 
+  // def getWeightsAndBiases = getWeights
+
   // basic distance measure here, i think ...
   def getError(feature: Vector, output: Vector): Double = {
     val v: Double = (feature - output).sum.abs
