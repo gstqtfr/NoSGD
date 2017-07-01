@@ -117,8 +117,7 @@ abstract class _NeuralNetwork(_neuronCounts: Seq[Int],
     */
   protected val neuronCounts: Seq[Int] = _neuronCounts.map( _ + 1).updated(M, _neuronCounts.last)
 
-
-
+  
   /**
     * neuron state vectors
     */
@@ -140,7 +139,7 @@ abstract class _NeuralNetwork(_neuronCounts: Seq[Int],
 
   delta(0) *= 0.0
 
-  private val _w: Iterator[DenseMatrix[Double]] =
+  protected val _w: Iterator[DenseMatrix[Double]] =
     for(ns <- neuronCounts.sliding(2)) yield {
       assert(ns.length == 2)
       val prevSize = ns.head
@@ -154,7 +153,24 @@ abstract class _NeuralNetwork(_neuronCounts: Seq[Int],
     *
     * the sum (of influences) for i+1 can be calculated by w(i) * V(i) [matrix multiplication]
     */
-  val w: Buffer[DenseMatrix[Double]] = _w.toBuffer
+  protected val w: Buffer[DenseMatrix[Double]] = _w.toBuffer
 
+  def classifyImpl(input: Seq[Double]): Seq[Double] = {
+    assert(input.length == V(0).length - 1)
 
+    V(0) := DenseVector((BIAS_VALUE +: input) : _*) //setting the input layer values
+
+    //forward propagation
+    for(i <- Range(0, M)) {
+      h(i+1) := w(i) * V(i)
+
+      V(i+1) := h(i+1).map(activationFunction)
+      if(i+1 != M) {
+        h(i+1)(0) = Double.MaxValue //this is actually redundant but might be better for transparency reasons
+        V(i+1)(0) = BIAS_VALUE
+      }
+    }
+
+    V(M).toArray
+  }
 }

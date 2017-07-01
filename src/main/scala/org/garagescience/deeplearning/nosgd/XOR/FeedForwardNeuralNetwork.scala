@@ -18,28 +18,12 @@ class FeedForwardNeuralNetwork( _neuronCounts: Seq[Int],
                                 override val useBias: Boolean = true)
   extends _NeuralNetwork(_neuronCounts = _neuronCounts, useBias = useBias) {
 
+  // TODO: do we need this? ...
   def activationFunction = _activationFunction
-
-  /*
-  private val _w: Iterator[DenseMatrix[Double]] =
-    for(ns <- neuronCounts.sliding(2)) yield {
-      assert(ns.length == 2)
-      val prevSize = ns.head
-      val nextSize = ns.last
-      //random weights at the beginning
-      DenseMatrix.rand(nextSize, prevSize).map(x => 2.0 * MAX_ABSOLUTE_WEIGHT_VALUE * x - 1.0)
-    }
-
-  /**
-    * (layerCount - 1) matrices of connection weights between layers
-    *
-    * the sum (of influences) for i+1 can be calculated by w(i) * V(i) [matrix multiplication]
-    */
-  val w: Buffer[DenseMatrix[Double]] = _w.toBuffer
-  */
 
   def getMaxDelta(): Double = delta.tail.map(_.map(abs(_)).max).max
 
+  /*
   def classifyImpl(input: Seq[Double]): Seq[Double] = {
     assert(input.length == V(0).length - 1)
 
@@ -58,6 +42,7 @@ class FeedForwardNeuralNetwork( _neuronCounts: Seq[Int],
 
     V(M).toArray
   }
+  */
 
   protected def trainImpl(input: Seq[Double], desiredResult: Seq[Double]): Unit = {
     assert(input.length == V(0).length - 1)
