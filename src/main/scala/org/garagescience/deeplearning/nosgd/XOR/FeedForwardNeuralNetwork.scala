@@ -17,12 +17,7 @@ class FeedForwardNeuralNetwork( _neuronCounts: Seq[Int],
                                 val gamma: Double,
                                 override val useBias: Boolean = true)
   extends _NeuralNetwork(_neuronCounts = _neuronCounts, useBias = useBias) {
-
-  /*
-  private val BIAS_VALUE: Double = if(useBias) 1.0 else 0.0
-  private val MAX_ABSOLUTE_WEIGHT_VALUE: Double = 1.0
-  */
-
+  
   def activationFunction = _activationFunction
 
   //val layerCount = _neuronCounts.size
