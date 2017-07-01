@@ -21,28 +21,8 @@ class FeedForwardNeuralNetwork( _neuronCounts: Seq[Int],
   // TODO: do we need this? ...
   def activationFunction = _activationFunction
 
+  // TODO: move to the parent class?
   def getMaxDelta(): Double = delta.tail.map(_.map(abs(_)).max).max
-
-  /*
-  def classifyImpl(input: Seq[Double]): Seq[Double] = {
-    assert(input.length == V(0).length - 1)
-
-    V(0) := DenseVector((BIAS_VALUE +: input) : _*) //setting the input layer values
-
-    //forward propagation
-    for(i <- Range(0, M)) {
-      h(i+1) := w(i) * V(i)
-
-      V(i+1) := h(i+1).map(activationFunction)
-      if(i+1 != M) {
-        h(i+1)(0) = Double.MaxValue //this is actually redundant but might be better for transparency reasons
-        V(i+1)(0) = BIAS_VALUE
-      }
-    }
-
-    V(M).toArray
-  }
-  */
 
   protected def trainImpl(input: Seq[Double], desiredResult: Seq[Double]): Unit = {
     assert(input.length == V(0).length - 1)

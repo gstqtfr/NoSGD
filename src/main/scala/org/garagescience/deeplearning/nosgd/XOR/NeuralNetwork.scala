@@ -117,7 +117,6 @@ abstract class _NeuralNetwork(_neuronCounts: Seq[Int],
     */
   protected val neuronCounts: Seq[Int] = _neuronCounts.map( _ + 1).updated(M, _neuronCounts.last)
 
-  
   /**
     * neuron state vectors
     */
@@ -129,7 +128,6 @@ abstract class _NeuralNetwork(_neuronCounts: Seq[Int],
     */
   protected val h: Buffer[DenseVector[Double]] =
   (neuronCounts map { layerCount => DenseVector.ones[Double](layerCount)}).toBuffer
-
 
   /**
     * errors
