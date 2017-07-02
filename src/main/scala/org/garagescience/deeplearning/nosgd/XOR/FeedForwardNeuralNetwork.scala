@@ -24,15 +24,20 @@ class FeedForwardNeuralNetwork( _neuronCounts: Seq[Int],
   // TODO: move to the parent class?
   def getMaxDelta(): Double = delta.tail.map(_.map(abs(_)).max).max
 
-  protected def trainImpl(input: Seq[Double], desiredResult: Seq[Double]): Unit = {
+  def trainImpl(input: Seq[Double], desiredResult: Seq[Double]): Unit = {
     assert(input.length == V(0).length - 1)
     assert(desiredResult.length == V(M).length)
 
     classify(input) //sets V and h
 
+
+    // TODO: hmm ... so i think ... not sure why this is copied here ...
     val eta: DenseVector[Double] = DenseVector(desiredResult : _*)
 
     //backpropagation - last layer
+    // TODO: so i guess this is the error. yep, it's the error.
+    // TODO: so the som. hype. network will need this to begin
+    // TODO: mutating the weights.
     delta(M) := h(M).map(activationFunction.derivative) :* (eta - V(M))
 
     //backpropagation - rest of the layers

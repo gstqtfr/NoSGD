@@ -187,8 +187,8 @@ object Runner {
       * to calculate the xor correctly
       */
 
-    var it: Int = 0;
-    var correctAnswersCount: Int = 0;
+    var it: Int = 0
+    var correctAnswersCount: Int = 0
 
     val r = new Random()
     while(correctAnswersCount != 4 && it <= 10000) {
@@ -198,6 +198,7 @@ object Runner {
       }
 
       //checking if it gives the correct answers already
+      // TODO: this is horrid - change it
       val correctAnswers = for (
         pi <- possibleInputs;
         answer = xornn.classifyBool(pi).head;

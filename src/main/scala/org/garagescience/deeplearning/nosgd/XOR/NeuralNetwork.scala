@@ -97,8 +97,8 @@ trait NeuralNetwork {
     * Bool interface for `teach`
     */
   def trainBool(input: Seq[Boolean], desiredResult: Seq[Boolean]): Unit = {
-    val i2 = input.map(activationFunction.fromBoolean(_).doubleValue)
-    val d2 = desiredResult.map(activationFunction.fromBoolean(_).doubleValue)
+    val i2: Seq[Double] = input.map(activationFunction.fromBoolean(_).doubleValue)
+    val d2: Seq[Double] = desiredResult.map(activationFunction.fromBoolean(_).doubleValue)
     train(i2, d2)
   }
 }
@@ -121,19 +121,19 @@ abstract class _NeuralNetwork(_neuronCounts: Seq[Int],
     * neuron state vectors
     */
   protected val V: Buffer[DenseVector[Double]] =
-  (neuronCounts map { layerCount => DenseVector.ones[Double](layerCount)}).toBuffer
+    (neuronCounts map { layerCount => DenseVector.ones[Double](layerCount)}).toBuffer
 
   /**
     * activation vectors
     */
   protected val h: Buffer[DenseVector[Double]] =
-  (neuronCounts map { layerCount => DenseVector.ones[Double](layerCount)}).toBuffer
+    (neuronCounts map { layerCount => DenseVector.ones[Double](layerCount)}).toBuffer
 
   /**
     * errors
     */
   protected val delta: Buffer[DenseVector[Double]] =
-  (neuronCounts map { layerCount => DenseVector.ones[Double](layerCount)}).toBuffer
+    (neuronCounts map { layerCount => DenseVector.ones[Double](layerCount)}).toBuffer
 
   delta(0) *= 0.0
 
