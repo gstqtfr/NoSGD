@@ -62,7 +62,7 @@ object SomHypeRunner {
     val system = ActorSystem("TestGCmultipleActorSytem")
 
 
-
+/*
 
     val gcl: List[ActorRef] = {for {i <- 0 until popSz} yield creatActor(system,
       // TODO: so, do we create an initial matrix function for each of these guys? or do we
@@ -110,7 +110,7 @@ object SomHypeRunner {
     if (it > 10000) {
       System.out.println("the system has reached a local optimum without hitting the correct solution - this can also happen :)")
     }
-
+*/
   }
 
   def main(args: Array[String]): Unit = {

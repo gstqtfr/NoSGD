@@ -1,6 +1,9 @@
 package org.garagescience.deeplearning.nosgd.linalg
 
 import breeze.linalg.{CSCMatrix => BSM, DenseMatrix => BDM, Matrix => BM}
+import org.apache.spark.ml.linalg.DenseMatrix
+import org.apache.spark.ml.{linalg => mllinalg}
+
 
 class _DenseMatrix(val numRows: Int,
                    val numCols: Int,
@@ -38,14 +41,6 @@ class _DenseMatrix(val numRows: Int,
     com.google.common.base.Objects.hashCode(numRows: Integer, numCols: Integer, toArray)
   }
 
-  def asBreeze: BM[Double] = {
-    if (!isTransposed) {
-      new BDM[Double](numRows, numCols, values)
-    } else {
-      val breezeMatrix = new BDM[Double](numCols, numRows, values)
-      breezeMatrix.t
-    }
-  }
 
   def apply(i: Int): Double = values(i)
 
@@ -106,59 +101,23 @@ class _DenseMatrix(val numRows: Int,
     }
   }
 
-  //override def numNonzeros: Int = values.count(_ != 0)
 
-  //override def numActives: Int = values.length
 
-  /**
-    * Generate a `SparseMatrix` from the given `_DenseMatrix`. The new matrix will have isTransposed
-    * set to false.
-    */
-  /*
-  def toSparse: SparseMatrix = {
-    val spVals: MArrayBuilder[Double] = new MArrayBuilder.ofDouble
-    val colPtrs: Array[Int] = new Array[Int](numCols + 1)
-    val rowIndices: MArrayBuilder[Int] = new MArrayBuilder.ofInt
-    var nnz = 0
-    var j = 0
-    while (j < numCols) {
-      var i = 0
-      while (i < numRows) {
-        val v = values(index(i, j))
-        if (v != 0.0) {
-          rowIndices += i
-          spVals += v
-          nnz += 1
-        }
-        i += 1
-      }
-      j += 1
-      colPtrs(j) = nnz
-    }
-    new SparseMatrix(numRows, numCols, colPtrs, rowIndices.result(), spVals.result())
+  def asML: mllinalg.DenseMatrix = {
+    new DenseMatrix(numRows, numCols, values, isTransposed)
   }
-  */
 
-  /*
-  override def colIter: Iterator[Vector] = {
-    if (isTransposed) {
-      Iterator.tabulate(numCols) { j =>
-        val col = new Array[Double](numRows)
-        blas.dcopy(numRows, values, j, numCols, col, 0, 1)
-        new DenseVector(col)
-      }
+
+
+  def asBreeze: BM[Double] = {
+    if (!isTransposed) {
+      new BDM[Double](numRows, numCols, values)
     } else {
-      Iterator.tabulate(numCols) { j =>
-        new DenseVector(values.slice(j * numRows, (j + 1) * numRows))
-      }
+      val breezeMatrix = new BDM[Double](numCols, numRows, values)
+      breezeMatrix.t
     }
   }
-  */
 
 
-  /*
-  override def asML: newlinalg._DenseMatrix = {
-    new newlinalg._DenseMatrix(numRows, numCols, values, isTransposed)
-  }
-  */
+
 }
