@@ -4,7 +4,6 @@ import akka.actor.{Actor, Props}
 import akka.event.Logging
 import org.apache.spark.ml.linalg.Matrix
 import org.garagescience.deeplearning.nosgd._
-
 import scala.collection.immutable.Seq
 import scala.language.postfixOps
 
@@ -14,7 +13,7 @@ class GerminalCentreActor(m: Matrix, error: Matrix => Double) extends Actor {
 
   // TODO: this'll be problematic for type param, unless we pass it in
   // TODO: as a param to the ctor ...
-  private val gc = new MatrixGerminalCentre(m)
+  private val gc = new LinalgMatrixGerminalCentre(m)
   private val log = Logging(context.system, this)
 
   def receive = {

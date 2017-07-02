@@ -6,9 +6,17 @@ import org.apache.spark.ml.linalg.{Matrices, Matrix, Vector, Vectors}
 // TODO: this has *got* to be type-parameterised!!!
 // TODO: I'M NOT FUCKING KIDDING!!! this MUST BE PARAMETERISED!!!
 
-class MatrixGerminalCentre(protected val m: Matrix,
-                           //protected val popSize: Int = 10,
-                           protected val poolSize: Int = 20) extends Hypermutate {
+// TODO: WHAT WE NEED is to type-parameterise using HIGHER KINDED TYPES!!!
+
+// TODO: one way of doing this would be to have a Dimensions param here, since
+// TODO: about the only problem would be with the rows & columns - this is
+// TODO: *CLEARLY* a tuple, e.g. Tuple2!!!
+
+// TODO: this is a nice idea. but bollox to it, it'll take too long just now ...
+
+class LinalgMatrixGerminalCentre(protected val m: Matrix,
+                                 //protected val popSize: Int = 10,
+                                 protected val poolSize: Int = 20) extends Hypermutate {
 
   import Matrix2BinarySeq._
 

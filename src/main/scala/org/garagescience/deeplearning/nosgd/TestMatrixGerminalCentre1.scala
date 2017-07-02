@@ -50,7 +50,7 @@ object TestMatrixGerminalCentre1 {
   def main(args: Array[String]): Unit = {
 
     val mgc = for {i <- 0 until popSize}
-      yield new MatrixGerminalCentre(randomMatrix(
+      yield new LinalgMatrixGerminalCentre(randomMatrix(
         target.numRows,
         target.numCols,
         target.toArray.length
