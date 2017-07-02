@@ -31,6 +31,10 @@ class SomHypeNeuralNetwork(_neuronCounts: Seq[Int],
     // we could also get the layer-by-layer backprop error, but let's go for
     // somatic hypermutation from here
 
+    // so our targets are the weight matrix, which is def'd by w, where
+    // w is a buffer of DenseMatrix[Double]. which we know how to Do
+    // Stuff to ...
+
 
 
   }

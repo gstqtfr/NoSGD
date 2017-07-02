@@ -1,12 +1,9 @@
 package org.garagescience.deeplearning.nosgd.XOR.examples
 
-import java.lang.System.out.println
-
 import scala.Array.canBuildFrom
 import scala.collection.immutable.HashMap
 import scala.io.Source.fromFile
 import scala.util.Random
-
 import org.garagescience.deeplearning.nosgd.XOR.SigmoidFunction
 import org.garagescience.deeplearning.nosgd.XOR.FeedForwardNeuralNetwork
 import org.garagescience.deeplearning.nosgd.XOR.NeuralNetwork

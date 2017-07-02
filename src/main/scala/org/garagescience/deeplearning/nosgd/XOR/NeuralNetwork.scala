@@ -151,7 +151,7 @@ abstract class _NeuralNetwork(_neuronCounts: Seq[Int],
     *
     * the sum (of influences) for i+1 can be calculated by w(i) * V(i) [matrix multiplication]
     */
-  protected val w: Buffer[DenseMatrix[Double]] = _w.toBuffer
+  val w: Buffer[DenseMatrix[Double]] = _w.toBuffer
 
   def classifyImpl(input: Seq[Double]): Seq[Double] = {
     assert(input.length == V(0).length - 1)
