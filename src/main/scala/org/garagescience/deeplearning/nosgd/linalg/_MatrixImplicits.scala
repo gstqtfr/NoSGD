@@ -1,9 +1,9 @@
 package org.garagescience.deeplearning.nosgd.linalg
 
-
 import breeze.linalg.{CSCMatrix => BSM, DenseMatrix => BDM, Matrix => BM}
-import org.apache.spark.ml.linalg.DenseMatrix
 import org.apache.spark.ml.{linalg => mllinalg}
+
+
 
 /**
   * Implicit methods available in Scala for converting [[org.garagescience.deeplearning.nosgd.linalg._Matrix]] to
@@ -12,7 +12,6 @@ import org.apache.spark.ml.{linalg => mllinalg}
 
 object _MatrixImplicits {
 
-  //implicit def mllibMatrixToMLMatrix(m: Matrix): newlinalg.Matrix = m.asML
 
   implicit def _DenseMatrixToMLDenseMatrix(m: _DenseMatrix): mllinalg.DenseMatrix = m.asML
 
@@ -20,13 +19,11 @@ object _MatrixImplicits {
 
   // TODO: add to's as well as from's
 
-  //implicit def mllibSparseMatrixToMLSparseMatrix(m: SparseMatrix): newlinalg.SparseMatrix = m.asML
+  implicit def breezeDenseMatrixTo_DenseMatrix(m: BDM[Double]): _DenseMatrix =
+    _Matrix.fromBreeze(m)
 
-  // implicit def mlMatrixToMLlibMatrix(m: newlinalg.Matrix): Matrix = Matrices.fromML(m)
+  implicit def mlDenseMatrixTo_DenseMatrix(m: mllinalg.DenseMatrix): _DenseMatrix =
+    _Matrix.fromML(m)
 
-  // implicit def mlDenseMatrixToMLlibDenseMatrix(m: newlinalg.DenseMatrix): DenseMatrix =
-    // Matrices.fromML(m).asInstanceOf[DenseMatrix]
 
-  //implicit def mlSparseMatrixToMLlibSparseMatrix(m: newlinalg.SparseMatrix): SparseMatrix =
-    // Matrices.fromML(m).asInstanceOf[SparseMatrix]
 }

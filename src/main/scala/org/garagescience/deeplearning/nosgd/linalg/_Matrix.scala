@@ -1,6 +1,7 @@
 package org.garagescience.deeplearning.nosgd.linalg
 
 import breeze.linalg.{CSCMatrix => BSM, DenseMatrix => BDM, Matrix => BM}
+import org.apache.spark.ml.linalg.DenseMatrix
 
 // i needed to create a typeclass _Matrix & get implicits to convert between breeze
 // linalg matrices & spark ml matrices & _Matrix
@@ -77,5 +78,27 @@ trait _Matrix extends Serializable {
     *          corresponding value in the matrix with type `Double`.
     */
   def foreach(f: (Int, Int, Double) => Unit)
+
+}
+
+object _Matrix {
+
+  def fromBreeze(breeze: BM[Double]): _DenseMatrix = {
+    breeze match {
+      case dm: BDM[Double] =>
+        new _DenseMatrix(dm.rows, dm.cols, dm.data, dm.isTranspose)
+      case _ =>
+        throw new UnsupportedOperationException(
+          s"Do not support conversion from type ${breeze.getClass.getName}.")
+    }
+  }
+
+  // def fromML(m: newlinalg.DenseMatrix): DenseMatrix = {
+  // new DenseMatrix(m.numRows, m.numCols, m.values, m.isTransposed)
+  // }
+
+  def fromML(m: DenseMatrix): _DenseMatrix = {
+    new _DenseMatrix(m.numRows, m.numCols, m.values, m.isTransposed)
+  }
 
 }

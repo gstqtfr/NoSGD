@@ -4,6 +4,16 @@ import breeze.linalg.{CSCMatrix => BSM, DenseMatrix => BDM, Matrix => BM}
 import org.apache.spark.ml.linalg.DenseMatrix
 import org.apache.spark.ml.{linalg => mllinalg}
 
+/*
+
+// testing function for _DenseMatrix
+
+def randomMatrix(rows: Int, cols: Int, sz: Int) = {
+    val tmpArray: Array[Double] = (for {i <- 0 until sz} yield scala.util.Random.nextGaussian).toArray
+    new _DenseMatrix(rows, cols, tmpArray, false)
+}
+
+*/
 
 class _DenseMatrix(val numRows: Int,
                    val numCols: Int,
