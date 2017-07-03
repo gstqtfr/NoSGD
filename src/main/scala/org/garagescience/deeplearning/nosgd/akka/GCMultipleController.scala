@@ -3,7 +3,8 @@ package org.garagescience.deeplearning.nosgd.akka
 import akka.actor.Actor.Receive
 import akka.actor.{Actor, ActorRef, ActorSystem, Props}
 import akka.event.Logging
-import org.apache.spark.ml.linalg.{Matrices, Matrix}
+//import org.apache.spark.ml.linalg.{Matrices, Matrix}
+import org.garagescience.deeplearning.nosgd.linalg.{_DenseMatrix, _Matrix}
 import org.garagescience.deeplearning.nosgd.{AckUpdateGC, _}
 import scala.collection.immutable.{Seq => TSeq}
 import scala.language.postfixOps
@@ -15,10 +16,11 @@ object GCMultipleController {
 
   private def randomMatrix(rows: Int, cols: Int, sz: Int) = {
     val tmpArray = for {i <- 0 until sz} yield r.nextGaussian
-    Matrices.dense(rows, cols, tmpArray.toArray)
+   // Matrices.dense(rows, cols, tmpArray.toArray)
+    new _DenseMatrix(rows, cols, tmpArray.toArray, false)
   }
 
-  private final val target = Matrices.dense(3, 3,
+  private final val target = new _DenseMatrix(3, 3,
     Array(
       0.0, 0.0, 0.0,
       0.0, 0.0, 0.0,
@@ -26,7 +28,7 @@ object GCMultipleController {
     )
   )
 
-  private def error(m1: Matrix): Double =
+  private def error(m1: _Matrix): Double =
     Math.sqrt(
       Math.pow(Math.abs((for {i <- 0 until target.numRows
                               j <- 0 until target.numCols}
@@ -34,8 +36,8 @@ object GCMultipleController {
     )
 
   private def creatActor(sys: ActorSystem,
-                         _init: () => Matrix,
-                        _error: Matrix => Double): ActorRef = {
+                         _init: () => _Matrix,
+                        _error: _Matrix => Double): ActorRef = {
     sys.actorOf(GerminalCentreActor.props(_init(), _error))
   }
 

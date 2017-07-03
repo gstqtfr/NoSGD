@@ -4,6 +4,7 @@ import akka.actor.{Actor, ActorRef, Props}
 import akka.event.Logging
 import org.apache.spark.ml.linalg.Matrix
 import org.garagescience.deeplearning.nosgd._
+import org.garagescience.deeplearning.nosgd.linalg._
 import scala.collection.immutable.{Seq => TSeq}
 
 
@@ -12,7 +13,7 @@ import scala.collection.immutable.{Seq => TSeq}
 // TODO: type parameterised, so LET'S DO IT!!!
 // TODO: ... but not just yet ...
 
-class GerminalCentreSingletonController(m: Matrix,
+class GerminalCentreSingletonController(m: _Matrix,
                                         gca: ActorRef,
                                         iterations: Int = 100,
                                         epsilon: Double = 0.01) extends ThinController(epsilon) {
@@ -65,10 +66,10 @@ object GerminalCentreSingletonController {
     Props(new GerminalCentreController(matrix, error, p, 1000))
     */
 
-  def props(matrix: Matrix, p: ActorRef, iterations: Int): Props =
+  def props(matrix: _Matrix, p: ActorRef, iterations: Int): Props =
     Props(new GerminalCentreSingletonController(matrix, p, iterations))
 
-  def props(matrix: Matrix, p: ActorRef): Props =
+  def props(matrix: _Matrix, p: ActorRef): Props =
     Props(new GerminalCentreSingletonController(matrix, p, 1000))
 
 }

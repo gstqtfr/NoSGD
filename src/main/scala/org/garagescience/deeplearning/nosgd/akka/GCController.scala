@@ -2,11 +2,12 @@ package org.garagescience.deeplearning.nosgd.akka
 
 import akka.actor.{Actor, ActorRef, Props}
 import akka.event.Logging
-import org.apache.spark.ml.linalg.Matrix
+//import org.apache.spark.ml.linalg.Matrix
+import org.garagescience.deeplearning.nosgd.linalg._
 import org.garagescience.deeplearning.nosgd._
 import scala.collection.immutable.{Seq => TSeq}
 
-class GCController(m: Matrix,
+class GCController(m: _Matrix,
                   // a supervisor actor would create its own, rather than
                   // have it passed
                    gcl: List[ActorRef],
@@ -88,10 +89,10 @@ class GCController(m: Matrix,
 
 object GCController {
 
-  def props(matrix: Matrix, l: List[ActorRef]): Props =
+  def props(matrix: _Matrix, l: List[ActorRef]): Props =
     Props(new GCController(matrix, l))
 
-  def props(matrix: Matrix, l: List[ActorRef], e: Double): Props =
+  def props(matrix: _Matrix, l: List[ActorRef], e: Double): Props =
     Props(new GCController(matrix, l, e))
 
 }

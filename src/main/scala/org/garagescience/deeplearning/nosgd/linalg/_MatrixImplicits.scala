@@ -4,7 +4,6 @@ import breeze.linalg.{CSCMatrix => BSM, DenseMatrix => BDM, Matrix => BM}
 import org.apache.spark.ml.{linalg => mllinalg}
 
 
-
 /**
   * Implicit methods available in Scala for converting [[org.garagescience.deeplearning.nosgd.linalg._Matrix]] to
   * [[org.apache.spark.ml.linalg.Matrix]] and [[breeze.linalg.DenseMatrix]] & vice versa.

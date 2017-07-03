@@ -130,4 +130,31 @@ class _DenseMatrix(val numRows: Int,
 
 
 
+
+  // TODO: make this more general by applying an op
+
+  override def -(m: BDM[Double]): _Matrix = {
+    require(m.rows == this.numRows, s"rows mismatch: ${m.rows} != ${numRows}")
+    require(m.cols == this.numCols, s"columns mismatch: ${m.cols} != ${numCols}")
+
+    val me: BDM[Double] = this.asBreeze.toDenseMatrix
+    val result: BDM[Double] = m - me
+
+    new _DenseMatrix(this.numRows, this.numCols, result.data, this.isTransposed)
+  }
+
+
+  def -(m: _DenseMatrix): _DenseMatrix = {
+    require(m.numRows == this.numRows, s"rows mismatch: ${m.numRows} != ${numRows}")
+    require(m.numCols == this.numCols, s"columns mismatch: ${m.numCols} != ${numCols}")
+
+    // this.values - m.values
+
+    val data: Array[Double] = (for {i <- 0 until m.numRows
+                                    j <- 0 until m.numCols} yield m.apply(i,j) - this.apply(i,j)).toArray
+
+
+    new _DenseMatrix(this.numRows, this.numCols, data, this.isTransposed)
+  }
+
 }

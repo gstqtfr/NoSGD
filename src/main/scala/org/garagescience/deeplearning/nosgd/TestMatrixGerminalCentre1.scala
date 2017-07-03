@@ -2,6 +2,7 @@ package org.garagescience.deeplearning.nosgd
 
 import org.apache.spark.ml.linalg.{Matrix, Matrices}
 import scala.collection.immutable.Seq
+import org.garagescience.deeplearning.nosgd.linalg._
 
 // TODO: Future. or Actor. get it sorted!!!
 
@@ -15,7 +16,7 @@ object TestMatrixGerminalCentre1 {
 
   // this is actually a Really Hard problem! ...
 
-  private final val target = Matrices.dense(3, 3,
+  private final val target = new _DenseMatrix(3, 3,
     Array(
       0.0, 0.0, 0.0,
       0.0, 0.0, 0.0,
@@ -25,7 +26,7 @@ object TestMatrixGerminalCentre1 {
 
   private def randomMatrix(rows: Int, cols: Int, sz: Int) = {
     val tmpArray = for {i <- 0 until sz} yield scala.util.Random.nextGaussian
-    Matrices.dense(rows, cols, tmpArray.toArray)
+    new _DenseMatrix(rows, cols, tmpArray.toArray)
   }
 
   // TODO: implement a matrix distance, e.g.:
@@ -33,9 +34,9 @@ object TestMatrixGerminalCentre1 {
 
   // TODO: okay, we have the 1st one, but let's try another few ...
 
-  private def error1(m1: Matrix): Double = (target - m1).abs.toArray.sum
+  private def error1(m1: _Matrix): Double = 0.0 //(m1 - target).abs.toArray.sum
 
-  private def error(m1: Matrix): Double =
+  private def error(m1: _Matrix): Double =
     Math.sqrt(
       Math.pow(Math.abs((for {i <- 0 until target.numRows
         j <- 0 until target.numCols}
@@ -61,7 +62,7 @@ object TestMatrixGerminalCentre1 {
 
       mgc.map(gc => gc.update(error))
 
-      val cloneattack: Seq[Seq[Matrix]] = mgc.map(gc => gc.clones)
+      val cloneattack: Seq[Seq[_Matrix]] = mgc.map(gc => gc.clones)
 
       val errors: Seq[Seq[Double]] = mgc.map(gc => gc.clones).
         map(xs => xs.map(d => error(d)))

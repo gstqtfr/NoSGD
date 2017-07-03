@@ -3,6 +3,7 @@ package org.garagescience.deeplearning.nosgd.XOR.examples
 import Helpers._
 import akka.actor.{ActorRef, ActorSystem}
 import org.apache.spark.ml.linalg.Matrix
+import org.garagescience.deeplearning.nosgd.linalg._
 import org.garagescience.deeplearning.nosgd.XOR._
 import org.garagescience.deeplearning.nosgd.akka.{GCController, GerminalCentreActor}
 import scala.collection.immutable.Seq
@@ -11,8 +12,8 @@ import scala.util.Random
 object SomHypeRunner {
 
   private def creatActor(sys: ActorSystem,
-                         _init: () => Matrix,
-                         _error: Matrix => Double): ActorRef = {
+                         _init: () => _Matrix,
+                         _error: _Matrix => Double): ActorRef = {
     sys.actorOf(GerminalCentreActor.props(_init(), _error))
   }
 

@@ -47,4 +47,14 @@ val _dm2: _DenseMatrix = bm3
 // now we need to test the ML Matrix, here goes:
 val _dm3: _DenseMatrix = ml2
 
+// test the subtraction method
+_dm3 - _dm3
+
+// & the one with the Breeze matrix
+_dm3 - bm3
+
+
+// & another!
+_dm3 - randomMatrix(3, 3, 3*3)
+
 // yep: all working perfectly ...

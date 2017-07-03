@@ -10,6 +10,7 @@ import org.apache.spark.ml.linalg.DenseMatrix
 // spark ml & breeze linalg
 
 // make this private[linalg]?
+// TODO: type-param this?!?
 trait _Matrix extends Serializable {
 
   /** Number of rows. */
@@ -17,6 +18,9 @@ trait _Matrix extends Serializable {
 
   /** Number of columns. */
   def numCols: Int
+
+  //  TODO: when this is type-param'd, we can do this:
+  //def values: T
 
   // TODO: do we need this?
   /** Flag that keeps track whether the matrix is transposed or not. False by default. */
@@ -30,6 +34,10 @@ trait _Matrix extends Serializable {
     }
     newArray
   }
+
+  def -(m: BDM[Double]): _Matrix
+
+  //def -(m: _Matrix): _Matrix
 
   /** Converts to a breeze matrix. */
   def asBreeze: BM[Double]
