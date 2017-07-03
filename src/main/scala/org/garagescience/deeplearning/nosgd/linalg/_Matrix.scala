@@ -1,7 +1,9 @@
 package org.garagescience.deeplearning.nosgd.linalg
 
 import breeze.linalg.{CSCMatrix => BSM, DenseMatrix => BDM, Matrix => BM}
-import org.apache.spark.ml.linalg.{Matrices,DenseMatrix}
+import org.apache.spark.ml.linalg.{DenseMatrix, Matrices}
+import org.garagescience.deeplearning.nosgd.linalg.LikeANumber.NumberLike
+
 import scala.reflect._
 import scala.reflect.runtime.universe._
 
@@ -109,6 +111,19 @@ object _Matrix {
   def fromML(m: DenseMatrix): _DenseMatrix[Double] =
     new _DenseMatrix(m.numRows, m.numCols, m.values, m.isTransposed)
 
+  // TODO: okay. if *this* fucker works ...
+  def mean[T](xs: Vector[T])(implicit ev: NumberLike[T]): T =
+    ev.divide(xs.reduce(ev.plus(_, _)), xs.size)
 
+
+
+
+  /*
+  def takeConstantAway[T](c: T, m: _Matrix[T])(implicit numOps: NumberLike[T]): _Matrix[T] = {
+    val result = for {i <- 0 until m.numRows
+                      j <- 0 until m.numCols}
+                  yield numOps.minus(m(i,j) - c)
+  }
+  */
 
 }

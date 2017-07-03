@@ -2,8 +2,8 @@ package org.garagescience.deeplearning.nosgd.linalg
 
 import breeze.linalg.{CSCMatrix => BSM, DenseMatrix => BDM, Matrix => BM}
 import org.apache.spark.ml.{linalg => mllinalg}
-
 import scala.reflect.ClassTag
+import org.garagescience.deeplearning.nosgd.linalg.LikeANumber.NumberLike
 
 /*
 
@@ -127,24 +127,52 @@ class _DenseMatrix[T](val numRows: Int,
   }
 
 
+  def minus[T](m: _Matrix[T])(implicit numOps: NumberLike[T]): _DenseMatrix[T] = {
+    // okay, i know, i hate asInstanceOf too, but sometimes you have to get your hands dirty ...
+    val newArray = values.zip(m.values).map { case (a: T, b: T) => numOps.minus(a,b)}.asInstanceOf[Array[T]]
+    new _DenseMatrix[T](m.numRows, m.numCols, newArray, isTransposed)
+  }
+
+  def plus[T](m: _Matrix[T])(implicit numOps: NumberLike[T]): _DenseMatrix[T] = {
+    // okay, i know, i hate asInstanceOf too, but sometimes you have to get your hands dirty ...
+    val newArray = values.zip(m.values).map { case (a: T, b: T) => numOps.plus(a,b)}.asInstanceOf[Array[T]]
+    new _DenseMatrix[T](m.numRows, m.numCols, newArray, isTransposed)
+  }
+
+  def -[T](m: _Matrix[T])(implicit numOps: NumberLike[T]): _DenseMatrix[T] = minus(m)
+
+  def +[T](m: _Matrix[T])(implicit numOps: NumberLike[T]): _DenseMatrix[T] = plus(m)
+
+  def takeAway[T](c: T, m: _Matrix[T])(implicit numOps: NumberLike[T]): _DenseMatrix[T] = {
+    val array: Array[T] = m.values
+    // okay, i know, i hate asInstanceOf too, but sometimes you have to get your hands dirty ...
+    val newArray: Array[T] = (array.map { e => numOps.minus(e,c) }).asInstanceOf[Array[T]]
+    new _DenseMatrix[T](m.numRows, m.numCols, newArray, isTransposed)
+  }
+
+
 
 
   // TODO: make this more general by applying an op
 
-  /*
-  def -(m: BDM[T])(implicit c: ClassTag[T]): _DenseMatrix[T] = {
+
+/*
+
+  def -[T](m: BDM[T])(implicit numOps: NumberLike[T]): _DenseMatrix[T] = {
+
     require(m.rows == this.numRows, s"rows mismatch: ${m.rows} != ${numRows}")
     require(m.cols == this.numCols, s"columns mismatch: ${m.cols} != ${numCols}")
 
-    val me: BDM[T] = this.asBreeze.toDenseMatrix
-    val result: BDM[T] = m - me
+    val result =
+      for {i <- 0 until numRows
+           j <- 0 until numCols}
+        yield numOps.minus(this.apply(i,j),m.apply(i,j))
 
-    for {i <- 0 until this.numRows
-        j <- 0 until this.numCols}
 
-    new _DenseMatrix(this.numRows, this.numCols, result.data, this.isTransposed)
+    new _DenseMatrix(this.numRows, this.numCols, result.toArray, this.isTransposed)
   }
-  */
+*/
+
 
   // TODO: need to sort this - we need operators like +, -, u.s.w. ...
 
