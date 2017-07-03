@@ -93,10 +93,6 @@ object _Matrix {
     }
   }
 
-  // def fromML(m: newlinalg.DenseMatrix): DenseMatrix = {
-  // new DenseMatrix(m.numRows, m.numCols, m.values, m.isTransposed)
-  // }
-
   def fromML(m: DenseMatrix): _DenseMatrix = {
     new _DenseMatrix(m.numRows, m.numCols, m.values, m.isTransposed)
   }
