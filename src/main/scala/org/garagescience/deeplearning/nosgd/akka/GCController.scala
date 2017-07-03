@@ -7,7 +7,7 @@ import org.garagescience.deeplearning.nosgd.linalg._
 import org.garagescience.deeplearning.nosgd._
 import scala.collection.immutable.{Seq => TSeq}
 
-class GCController(m: _Matrix,
+class GCController(m: _Matrix[Double],
                   // a supervisor actor would create its own, rather than
                   // have it passed
                    gcl: List[ActorRef],
@@ -89,10 +89,10 @@ class GCController(m: _Matrix,
 
 object GCController {
 
-  def props(matrix: _Matrix, l: List[ActorRef]): Props =
+  def props(matrix: _Matrix[Double], l: List[ActorRef]): Props =
     Props(new GCController(matrix, l))
 
-  def props(matrix: _Matrix, l: List[ActorRef], e: Double): Props =
+  def props(matrix: _Matrix[Double], l: List[ActorRef], e: Double): Props =
     Props(new GCController(matrix, l, e))
 
 }

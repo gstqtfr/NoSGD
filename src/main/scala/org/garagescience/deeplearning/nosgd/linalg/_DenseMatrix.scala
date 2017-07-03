@@ -1,8 +1,9 @@
 package org.garagescience.deeplearning.nosgd.linalg
 
 import breeze.linalg.{CSCMatrix => BSM, DenseMatrix => BDM, Matrix => BM}
-import org.apache.spark.ml.linalg.DenseMatrix
 import org.apache.spark.ml.{linalg => mllinalg}
+
+import scala.reflect.ClassTag
 
 /*
 
@@ -15,10 +16,10 @@ def randomMatrix(rows: Int, cols: Int, sz: Int) = {
 
 */
 
-class _DenseMatrix(val numRows: Int,
+class _DenseMatrix[T](val numRows: Int,
                    val numCols: Int,
-                   val values: Array[Double],
-                   override val isTransposed: Boolean) extends _Matrix {
+                   val values: Array[T],
+                   override val isTransposed: Boolean) extends _Matrix[T] {
 
   require(values.length == numRows * numCols, "The number of values supplied doesn't match the " +
     s"size of the matrix! values.length: ${values.length}, numRows * numCols: ${numRows * numCols}")
@@ -39,22 +40,24 @@ class _DenseMatrix(val numRows: Int,
     * @param values  matrix entries in column major
     */
 
-  def this(numRows: Int, numCols: Int, values: Array[Double]) =
+  def this(numRows: Int, numCols: Int, values: Array[T]) =
     this(numRows, numCols, values, false)
 
+  // TODO: hmm ... code smell here ...
   override def equals(o: Any): Boolean = o match {
-    case m: _Matrix => asBreeze == m.asBreeze
+    case m: _Matrix[T] => asBreeze == m.asBreeze
     case _ => false
   }
 
+  /*
   override def hashCode: Int = {
     com.google.common.base.Objects.hashCode(numRows: Integer, numCols: Integer, toArray)
   }
+  */
 
+  def apply(i: Int): T = values(i)
 
-  def apply(i: Int): Double = values(i)
-
-  override def apply(i: Int, j: Int): Double = values(index(i, j))
+  override def apply(i: Int, j: Int): T = values(index(i, j))
 
   def index(i: Int, j: Int): Int = {
     require(i >= 0 && i < numRows, s"Expected 0 <= i < $numRows, got i = $i.")
@@ -62,16 +65,18 @@ class _DenseMatrix(val numRows: Int,
     if (!isTransposed) i + numRows * j else j + numCols * i
   }
 
-  def update(i: Int, j: Int, v: Double): Unit = {
+  def update(i: Int, j: Int, v: T): Unit = {
     values(index(i, j)) = v
   }
 
-  override def copy: _DenseMatrix = new _DenseMatrix(numRows, numCols, values.clone())
+  override def copy: _DenseMatrix[T] = new _DenseMatrix(numRows, numCols, values.clone())
 
-  def map(f: Double => Double) = new _DenseMatrix(numRows, numCols, values.map(f),
-    isTransposed)
+  override def map(f: T => T)(implicit c: ClassTag[T]): _DenseMatrix[T] = {
+    val ar: Array[T] = values map f
+    new _DenseMatrix(numRows, numCols, ar, isTransposed)
+  }
 
-  def update(f: Double => Double): _DenseMatrix = {
+  def update(f: T => T): _DenseMatrix[T] = {
     val len = values.length
     var i = 0
     while (i < len) {
@@ -81,9 +86,9 @@ class _DenseMatrix(val numRows: Int,
     this
   }
 
-  override def transpose: _DenseMatrix = new _DenseMatrix(numCols, numRows, values, !isTransposed)
+  override def transpose: _DenseMatrix[T] = new _DenseMatrix(numCols, numRows, values, !isTransposed)
 
-  override def foreach(f: (Int, Int, Double) => Unit): Unit = {
+  override def foreach(f: (Int, Int, T) => Unit): Unit = {
     if (!isTransposed) {
       // outer loop over columns
       var j = 0
@@ -112,18 +117,11 @@ class _DenseMatrix(val numRows: Int,
   }
 
 
-
-  def asML: mllinalg.DenseMatrix = {
-    new DenseMatrix(numRows, numCols, values, isTransposed)
-  }
-
-
-
-  def asBreeze: BM[Double] = {
+  def asBreeze: BM[T] = {
     if (!isTransposed) {
-      new BDM[Double](numRows, numCols, values)
+      new BDM[T](numRows, numCols, values)
     } else {
-      val breezeMatrix = new BDM[Double](numCols, numRows, values)
+      val breezeMatrix = new BDM[T](numCols, numRows, values)
       breezeMatrix.t
     }
   }
@@ -133,28 +131,39 @@ class _DenseMatrix(val numRows: Int,
 
   // TODO: make this more general by applying an op
 
-  override def -(m: BDM[Double]): _Matrix = {
+  /*
+  def -(m: BDM[T])(implicit c: ClassTag[T]): _DenseMatrix[T] = {
     require(m.rows == this.numRows, s"rows mismatch: ${m.rows} != ${numRows}")
     require(m.cols == this.numCols, s"columns mismatch: ${m.cols} != ${numCols}")
 
-    val me: BDM[Double] = this.asBreeze.toDenseMatrix
-    val result: BDM[Double] = m - me
+    val me: BDM[T] = this.asBreeze.toDenseMatrix
+    val result: BDM[T] = m - me
+
+    for {i <- 0 until this.numRows
+        j <- 0 until this.numCols}
 
     new _DenseMatrix(this.numRows, this.numCols, result.data, this.isTransposed)
   }
+  */
 
+  // TODO: need to sort this - we need operators like +, -, u.s.w. ...
 
-  def -(m: _DenseMatrix): _DenseMatrix = {
+/*
+  def -(m: _DenseMatrix[T]): _DenseMatrix[T] = {
     require(m.numRows == this.numRows, s"rows mismatch: ${m.numRows} != ${numRows}")
     require(m.numCols == this.numCols, s"columns mismatch: ${m.numCols} != ${numCols}")
 
     // this.values - m.values
 
-    val data: Array[Double] = (for {i <- 0 until m.numRows
+    val data: Array[T] = (for {i <- 0 until m.numRows
                                     j <- 0 until m.numCols} yield m.apply(i,j) - this.apply(i,j)).toArray
 
 
-    new _DenseMatrix(this.numRows, this.numCols, data, this.isTransposed)
+    new _DenseMatrix[T](this.numRows, this.numCols, data, this.isTransposed)
   }
+*/
+
+  //def abs: _DenseMatrix[T] =
+  //  new _DenseMatrix(numRows, numCols, values map { e => if (e < 0) -e else e }, isTransposed)
 
 }

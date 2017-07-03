@@ -57,7 +57,7 @@ object GCSingletonController {
     )
   )
 
-  private def error(m1: _Matrix): Double =
+  private def error(m1: _Matrix[Double]): Double =
     Math.sqrt(
       Math.pow(Math.abs((for {i <- 0 until target.numRows
                               j <- 0 until target.numCols}

@@ -10,7 +10,7 @@ import scala.language.postfixOps
 
 // TODO: type parameterise this code!!! Matrix=>T
 
-class GerminalCentreActor(m: _Matrix, error: _Matrix => Double) extends Actor {
+class GerminalCentreActor(m: _Matrix[Double], error: _Matrix[Double] => Double) extends Actor {
 
   // TODO: this'll be problematic for type param, unless we pass it in
   // TODO: as a param to the ctor ...
@@ -49,7 +49,7 @@ object GerminalCentreActor {
 
   // best practise is to put the props close to where the
   // actor itself is init'd
-  def props(m: _Matrix, error: _Matrix => Double): Props =
+  def props(m: _Matrix[Double], error: _Matrix[Double] => Double): Props =
     Props(new GerminalCentreActor(m, error))
 
 }

@@ -12,8 +12,8 @@ import scala.util.Random
 object SomHypeRunner {
 
   private def creatActor(sys: ActorSystem,
-                         _init: () => _Matrix,
-                         _error: _Matrix => Double): ActorRef = {
+                         _init: () => _Matrix[Double],
+                         _error: _Matrix[Double] => Double): ActorRef = {
     sys.actorOf(GerminalCentreActor.props(_init(), _error))
   }
 

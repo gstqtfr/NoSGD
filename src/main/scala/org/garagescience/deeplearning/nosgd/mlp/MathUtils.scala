@@ -67,8 +67,8 @@ object MathUtils {
         m.toArray map { elem => elem * rhs }
       )
 
-    def abs =
-      Matrices.dense(m.numRows, m.numCols, m.toArray map { e => if (e < 0) -e else e })
+    //def abs =
+      //Matrices.dense(m.numRows, m.numCols, m.toArray map { e => if (e < 0) -e else e })
 
     def sum: Double =
       m.toArray.foldLeft(0.0)((x,y) => x + y)

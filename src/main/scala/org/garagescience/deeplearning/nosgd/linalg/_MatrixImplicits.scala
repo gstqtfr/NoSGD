@@ -12,17 +12,19 @@ import org.apache.spark.ml.{linalg => mllinalg}
 object _MatrixImplicits {
 
 
-  implicit def _DenseMatrixToMLDenseMatrix(m: _DenseMatrix): mllinalg.DenseMatrix = m.asML
+  //implicit def _DenseMatrixToMLDenseMatrix[T](m: _DenseMatrix[T]): mllinalg.DenseMatrix = m.asML
 
-  implicit def _DenseMatrixToBreezeDenseMatrix(m: _DenseMatrix): BM[Double] = m.asBreeze
+  implicit def _DenseMatrixToBreezeDenseMatrix[T](m: _DenseMatrix[T]): BM[T] = m.asBreeze
 
   // TODO: add to's as well as from's
 
-  implicit def breezeDenseMatrixTo_DenseMatrix(m: BDM[Double]): _DenseMatrix =
+  implicit def breezeDenseMatrixTo_DenseMatrix[T](m: BDM[T]): _DenseMatrix[T] =
     _Matrix.fromBreeze(m)
 
-  implicit def mlDenseMatrixTo_DenseMatrix(m: mllinalg.DenseMatrix): _DenseMatrix =
+  // TODO: SPECIALISED!!! DOUBLE-PLUS UNGOOD!!! SORT IT OUT!!!!!
+  /*
+  implicit def mlDenseMatrixTo_DenseMatrix[Double](m: mllinalg.DenseMatrix): _DenseMatrix[Double] =
     _Matrix.fromML(m)
-
+  */
 
 }

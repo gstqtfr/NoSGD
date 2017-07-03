@@ -15,7 +15,9 @@ import org.garagescience.deeplearning.nosgd.linalg._
 
 // TODO: this is a nice idea. but bollox to it, it'll take too long just now ...
 
-class LinalgMatrixGerminalCentre(protected val m: _Matrix,
+// can now type-param quite easily ...
+
+class LinalgMatrixGerminalCentre(protected val m: _Matrix[Double],
                                  //protected val popSize: Int = 10,
                                  protected val poolSize: Int = 20) extends Hypermutate {
 
@@ -25,7 +27,7 @@ class LinalgMatrixGerminalCentre(protected val m: _Matrix,
   val cols = m.numCols
 
   // create our clonal pool (var?!)
-  var clones: Seq[_Matrix] = for {i <- 0 until poolSize} yield m
+  var clones: Seq[_Matrix[Double]] = for {i <- 0 until poolSize} yield m
 
   // initialise our germinal centres
   val centres: Seq[DoubleGerminalCentre] = for {i <- 0 until poolSize
@@ -38,25 +40,25 @@ class LinalgMatrixGerminalCentre(protected val m: _Matrix,
 
   protected def germinate: Seq[Seq[Double]] = centres.map(gc => gc.germinate)
 
-  protected def compareAndReplace(l1: Seq[_Matrix],
-                                  l2: Seq[_Matrix],
-                                  f: _Matrix => Double): Seq[(_Matrix, Double)] =
+  protected def compareAndReplace(l1: Seq[_Matrix[Double]],
+                                  l2: Seq[_Matrix[Double]],
+                                  f: _Matrix[Double] => Double): Seq[(_Matrix[Double], Double)] =
     l1.zip(l2).map { case (c, m) =>
       val f_of_c = f(c)
       val f_of_m = f(m)
       if (f(c) < f(m)) (c, f_of_c) else (m, f_of_m)
     }
 
-  def getFittest(f: _Matrix => Double): Seq[_Matrix] = {
+  def getFittest(f: _Matrix[Double] => Double): Seq[_Matrix[Double]] = {
     clones.sortWith { case (a,b) => f(a) < f(b) }
   }
 
   // TODO: need to look out for:
   // TODO: java.lang.IllegalArgumentException
   // TODO: on Matrix dims ...
-  def update(f: _Matrix => Double): Seq[Double] = {
-    val _clones: Seq[_Matrix] = germinate.map(xs => new _DenseMatrix(rows, cols, xs.toArray))
-    val clonesAndFitness: Seq[(_Matrix, Double)] = compareAndReplace(clones, _clones, f)
+  def update(f: _Matrix[Double] => Double): Seq[Double] = {
+    val _clones: Seq[_Matrix[Double]] = germinate.map(xs => new _DenseMatrix(rows, cols, xs.toArray))
+    val clonesAndFitness: Seq[(_Matrix[Double], Double)] = compareAndReplace(clones, _clones, f)
     clones = clonesAndFitness.map { case (c,f) => c }
     clonesAndFitness.map { case (c,f) => f }
   }

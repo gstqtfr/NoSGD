@@ -28,7 +28,7 @@ object GCMultipleController {
     )
   )
 
-  private def error(m1: _Matrix): Double =
+  private def error(m1: _Matrix[Double]): Double =
     Math.sqrt(
       Math.pow(Math.abs((for {i <- 0 until target.numRows
                               j <- 0 until target.numCols}
@@ -36,8 +36,8 @@ object GCMultipleController {
     )
 
   private def creatActor(sys: ActorSystem,
-                         _init: () => _Matrix,
-                        _error: _Matrix => Double): ActorRef = {
+                         _init: () => _Matrix[Double],
+                        _error: _Matrix[Double] => Double): ActorRef = {
     sys.actorOf(GerminalCentreActor.props(_init(), _error))
   }
 

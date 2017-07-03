@@ -11,7 +11,7 @@ final case object GetUpdateGC   extends GCMessages
 final case object AckUpdateGC   extends GCMessages
 final case object GetErrorsGC   extends GCMessages
 final case object GetMinimumGC  extends GCMessages
-final case class  MinimumGC(m: _Matrix)
+final case class  MinimumGC(m: _Matrix[Double])
   extends GCMessages
 final case class  ErrorsGC(errors: Seq[Double])
   extends GCMessages

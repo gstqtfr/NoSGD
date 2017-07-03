@@ -13,7 +13,7 @@ import scala.collection.immutable.{Seq => TSeq}
 // TODO: type parameterised, so LET'S DO IT!!!
 // TODO: ... but not just yet ...
 
-class GerminalCentreSingletonController(m: _Matrix,
+class GerminalCentreSingletonController[T](m: _Matrix[T],
                                         gca: ActorRef,
                                         iterations: Int = 100,
                                         epsilon: Double = 0.01) extends ThinController(epsilon) {
@@ -66,10 +66,10 @@ object GerminalCentreSingletonController {
     Props(new GerminalCentreController(matrix, error, p, 1000))
     */
 
-  def props(matrix: _Matrix, p: ActorRef, iterations: Int): Props =
+  def props[T](matrix: _Matrix[T], p: ActorRef, iterations: Int): Props =
     Props(new GerminalCentreSingletonController(matrix, p, iterations))
 
-  def props(matrix: _Matrix, p: ActorRef): Props =
+  def props[T](matrix: _Matrix[T], p: ActorRef): Props =
     Props(new GerminalCentreSingletonController(matrix, p, 1000))
 
 }
