@@ -25,6 +25,8 @@ libraryDependencies ++= Seq(
   "com.typesafe.akka" % "akka-actor_2.11"                % "2.5.3",
   "org.scalanlp"     %% "breeze"                         % "0.13",
   "org.scalanlp"     %% "breeze-config"                  % "0.9.1",
+  "junit"             % "junit"                          % "4.12" % Test,
+  "com.novocode"      % "junit-interface"                % "0.11" % Test,
   //"org.scalanlp"     %% "breeze-config"                  % "0.13",
   //"org.scalanlp"     %% "breeze-natives"                 % "0.8" % "test, runtime"
   "org.scalanlp"     %% "breeze-natives"                 % "0.13" % "test, runtime"
