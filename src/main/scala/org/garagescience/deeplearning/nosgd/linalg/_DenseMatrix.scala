@@ -4,6 +4,7 @@ import breeze.linalg.{CSCMatrix => BSM, DenseMatrix => BDM, Matrix => BM}
 import org.apache.spark.ml.{linalg => mllinalg}
 import scala.reflect.ClassTag
 import org.garagescience.deeplearning.nosgd.linalg.LikeANumber.NumberLike
+import scala.collection.JavaConverters
 
 /*
 
@@ -48,12 +49,6 @@ class _DenseMatrix[T](val numRows: Int,
     case m: _Matrix[T] => asBreeze == m.asBreeze
     case _ => false
   }
-
-  /*
-  override def hashCode: Int = {
-    com.google.common.base.Objects.hashCode(numRows: Integer, numCols: Integer, toArray)
-  }
-  */
 
   def apply(i: Int): T = values(i)
 
@@ -126,10 +121,10 @@ class _DenseMatrix[T](val numRows: Int,
     }
   }
 
-
+  /*
   def minus[T](m: _Matrix[T])(implicit numOps: NumberLike[T]): _DenseMatrix[T] = {
     // okay, i know, i hate asInstanceOf too, but sometimes you have to get your hands dirty ...
-    val newArray = values.zip(m.values).map { case (a: T, b: T) => numOps.minus(a,b)}.asInstanceOf[Array[T]]
+    val newArray: Array[T] = values.zip(m.values).map { case (a: T, b: T) => numOps.minus(a,b)}.asInstanceOf[Array[T]]
     new _DenseMatrix[T](m.numRows, m.numCols, newArray, isTransposed)
   }
 
@@ -149,49 +144,26 @@ class _DenseMatrix[T](val numRows: Int,
     val newArray: Array[T] = (array.map { e => numOps.minus(e,c) }).asInstanceOf[Array[T]]
     new _DenseMatrix[T](m.numRows, m.numCols, newArray, isTransposed)
   }
+  */
 
+}
 
+object _DenseMatrix {
 
+  def minus[T](m1: _DenseMatrix[T], m2: _DenseMatrix[T])(implicit numOps: NumberLike[T]): _DenseMatrix[T] = {
+    require(m1.numRows == m2.numRows, s"Matrix rows don't match: ${m1.numRows} != ${m1.numRows}")
+    require(m1.numCols == m2.numCols, s"Matrix rows don't match: ${m1.numCols} != ${m1.numCols}")
 
-  // TODO: make this more general by applying an op
+    val a1 = m1.values
+    val a2 = m2.values
 
+    val newValues: Array[T] = a1.zip(a2).map {
+      case (a, b) => numOps.minus(a,b)
+    }.asInstanceOf[Array[T]]
 
-/*
+    //m1.values.zip(m2.values).map(NumOps.minus(_,_))
 
-  def -[T](m: BDM[T])(implicit numOps: NumberLike[T]): _DenseMatrix[T] = {
-
-    require(m.rows == this.numRows, s"rows mismatch: ${m.rows} != ${numRows}")
-    require(m.cols == this.numCols, s"columns mismatch: ${m.cols} != ${numCols}")
-
-    val result =
-      for {i <- 0 until numRows
-           j <- 0 until numCols}
-        yield numOps.minus(this.apply(i,j),m.apply(i,j))
-
-
-    new _DenseMatrix(this.numRows, this.numCols, result.toArray, this.isTransposed)
+    new _DenseMatrix[T](m1.numRows, m1.numCols, newValues, m1.isTransposed)
   }
-*/
-
-
-  // TODO: need to sort this - we need operators like +, -, u.s.w. ...
-
-/*
-  def -(m: _DenseMatrix[T]): _DenseMatrix[T] = {
-    require(m.numRows == this.numRows, s"rows mismatch: ${m.numRows} != ${numRows}")
-    require(m.numCols == this.numCols, s"columns mismatch: ${m.numCols} != ${numCols}")
-
-    // this.values - m.values
-
-    val data: Array[T] = (for {i <- 0 until m.numRows
-                                    j <- 0 until m.numCols} yield m.apply(i,j) - this.apply(i,j)).toArray
-
-
-    new _DenseMatrix[T](this.numRows, this.numCols, data, this.isTransposed)
-  }
-*/
-
-  //def abs: _DenseMatrix[T] =
-  //  new _DenseMatrix(numRows, numCols, values map { e => if (e < 0) -e else e }, isTransposed)
 
 }

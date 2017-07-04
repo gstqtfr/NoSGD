@@ -18,11 +18,13 @@ object LikeANumber {
       def times(x: Double, y: Double): Double = x * y
       def divide(x: Double, y: Int):  Double = x / y
     }
+    /*
     implicit object NumberLikeFloat extends NumberLike[Float] {
       def plus(x: Float, y: Float): Float = x + y
       def minus(x: Float, y: Float): Float = x - y
       def times(x: Float, y: Float): Float = x * y
       def divide(x: Float, y: Int): Float = x / y
     }
+    */
   }
 }
