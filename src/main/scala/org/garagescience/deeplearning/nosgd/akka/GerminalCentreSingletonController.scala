@@ -1,4 +1,4 @@
-package org.garagescience.deeplearning.nosgd.akka2
+package org.garagescience.deeplearning.nosgd.akka
 
 import akka.actor.{Actor, ActorRef, Props}
 import akka.event.Logging
@@ -29,7 +29,7 @@ class GerminalCentreSingletonController[T](m: Matrix[T],
       incrementAndPrint
       gca ! GetErrorsGC
 
-    case ErrorsGC(xs: TSeq[Double]) =>
+    case ErrorsGC(xs: Array[Double]) =>
       log.info(s"${self.path} received ErrorsGC")
       log.info(s"${self.path} errors: ${xs}")
       log.info(s"${self.path} error term: ${count} : ${getMinimum(xs)}")

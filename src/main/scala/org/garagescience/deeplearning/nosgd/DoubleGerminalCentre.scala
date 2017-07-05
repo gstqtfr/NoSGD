@@ -1,6 +1,6 @@
 package org.garagescience.deeplearning.nosgd
 
-import scala.collection.immutable.Seq
+import scala.collection.immutable.{Seq=>TSeq}
 
 // TODO: bear in mind parallelisation here ...
 

@@ -1,7 +1,6 @@
 package org.garagescience.deeplearning.nosgd
 
-import scala.collection.immutable.Seq
-//import org.apache.spark.ml.linalg.{Matrices, Matrix=>LMatrix, Vector, Vectors}
+import scala.collection.immutable.{Seq=>TSeq}
 import org.garagescience.deeplearning.nosgd.linalg._
 
 // TODO: this has *got* to be type-parameterised!!!
@@ -21,7 +20,7 @@ class LinalgMatrixGerminalCentre(protected val m: Matrix[Double],
                                  //protected val popSize: Int = 10,
                                  protected val poolSize: Int = 20) extends Hypermutate {
 
-  import Matrix2BinarySeq._
+  //import Matrix2BinarySeq._
 
   val rows = m.height
   val cols = m.width
@@ -30,7 +29,7 @@ class LinalgMatrixGerminalCentre(protected val m: Matrix[Double],
   var clones: Array[Matrix[Double]] = { for {i <- 0 until poolSize} yield m }.toArray
 
   // initialise our germinal centres
-  val centres: Seq[DoubleGerminalCentre] = for {i <- 0 until poolSize
+  val centres: TSeq[DoubleGerminalCentre] = for {i <- 0 until poolSize
                      row <- 0 until rows
                      col <- 0 until cols}
     yield new DoubleGerminalCentre(m(row, col), rows * cols)

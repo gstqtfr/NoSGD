@@ -1,11 +1,9 @@
-package org.garagescience.deeplearning.nosgd.akka2
+package org.garagescience.deeplearning.nosgd.akka
 
 import akka.actor.{Actor, Props}
 import akka.event.Logging
-//import org.apache.spark.ml.linalg.Matrix
 import org.garagescience.deeplearning.nosgd.linalg._
 import org.garagescience.deeplearning.nosgd._
-import scala.collection.immutable.Seq
 import scala.language.postfixOps
 
 // TODO: type parameterise this code!!! Matrix=>T

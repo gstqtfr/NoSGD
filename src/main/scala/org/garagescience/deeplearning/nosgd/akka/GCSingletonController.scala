@@ -1,4 +1,4 @@
-package org.garagescience.deeplearning.nosgd.akka2
+package org.garagescience.deeplearning.nosgd.akka
 
 import akka.actor.Actor.Receive
 import akka.actor.{Actor, ActorRef, ActorSystem, Props}
@@ -24,7 +24,7 @@ class Pong extends Actor {
     case GetErrorsGC =>
       log.info(s"${self.path} received GetErrorsGC")
       val xs: TSeq[Double] = for (i <- 0 until 5) yield scala.util.Random.nextGaussian()
-      sender ! ErrorsGC(xs)
+      sender ! ErrorsGC(xs.toArray)
 
     case FinalWhistle =>
       log.info(s"${self.path} received FinalWhistle, shutting down")

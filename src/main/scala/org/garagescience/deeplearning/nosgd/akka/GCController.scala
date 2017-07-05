@@ -1,8 +1,6 @@
-package org.garagescience.deeplearning.nosgd.akka2
+package org.garagescience.deeplearning.nosgd.akka
 
 import akka.actor.{Actor, ActorRef, Props}
-import akka.event.Logging
-//import org.apache.spark.ml.linalg.Matrix
 import org.garagescience.deeplearning.nosgd._
 import org.garagescience.deeplearning.nosgd.linalg._
 import scala.collection.immutable.{Seq => TSeq}
@@ -55,7 +53,8 @@ class GCController(m: Matrix[Double],
       sender ! GetErrorsGC
 
 
-    case ErrorsGC(xs: TSeq[Double]) =>
+    //case ErrorsGC(xs: TSeq[Double]) =>
+    case ErrorsGC(xs: Array[Double]) =>
       log.info(s"${self.path} ${count} received ErrorsGC")
       log.info(s"${self.path} ${count} errors: ${xs}")
       log.info(s"${self.path} ${count} error term: ${count} : ${getMinimum(xs)}")
@@ -80,8 +79,8 @@ class GCController(m: Matrix[Double],
 
 
 
-    case _ =>
-      log.info(s"${self.path} received unknown message from ${sender}")
+    case m =>
+      log.info(s"${self.path} received unknown message from ${sender}: ${m}")
 
   }
 

@@ -1,12 +1,8 @@
-package org.garagescience.deeplearning.nosgd.akka2
+package org.garagescience.deeplearning.nosgd.akka
 
-import akka.actor.Actor.Receive
 import akka.actor.{Actor, ActorRef, ActorSystem, Props}
-import akka.event.Logging
 import org.garagescience.deeplearning.nosgd.linalg.Vector.At
-
-import scala.collection.immutable.{IndexedSeq, Seq}
-//import org.apache.spark.ml.linalg.{Matrices, Matrix}
+import scala.collection.immutable.{IndexedSeq, Seq=>TSeq}
 import org.garagescience.deeplearning.nosgd.linalg._
 import org.garagescience.deeplearning.nosgd.{AckUpdateGC, _}
 import scala.collection.immutable.{Seq => TSeq}
@@ -46,7 +42,8 @@ object GCMultipleController {
 
     val system = ActorSystem("TestGCmultipleActorSytem")
 
-    val gcl: List[ActorRef] = {for {i <- 0 until popSz} yield creatActor(system, init, error)}.toList
+    val gcl: List[ActorRef] =
+      {for {i <- 0 until popSz} yield creatActor(system, init, error)}.toList
 
     val gcc: ActorRef = system.
       actorOf(GCController.props(target, gcl, epsilon),
