@@ -1,13 +1,13 @@
 package org.garagescience.deeplearning.nosgd.akka
 
 import akka.actor.{Actor, ActorRef, ActorSystem, Props}
-import org.garagescience.deeplearning.nosgd.linalg.Vector.At
+// import org.garagescience.deeplearning.nosgd.linalg.Vector.At
 import scala.collection.immutable.{IndexedSeq, Seq=>TSeq}
 import org.garagescience.deeplearning.nosgd.linalg._
 import org.garagescience.deeplearning.nosgd.{AckUpdateGC, _}
 import scala.collection.immutable.{Seq => TSeq}
 import scala.language.postfixOps
-import scala.util.Random
+// import scala.util.Random
 
 object GCMultipleController {
 

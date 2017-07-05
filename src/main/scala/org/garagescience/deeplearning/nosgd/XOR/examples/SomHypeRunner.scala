@@ -2,7 +2,6 @@ package org.garagescience.deeplearning.nosgd.XOR.examples
 
 import Helpers._
 import akka.actor.{ActorRef, ActorSystem}
-//import org.apache.spark.ml.linalg.Matrix
 import org.garagescience.deeplearning.nosgd.linalg._
 import org.garagescience.deeplearning.nosgd.XOR._
 import org.garagescience.deeplearning.nosgd.akka.{GCController, GerminalCentreActor}

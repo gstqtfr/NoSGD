@@ -3,7 +3,6 @@ package org.garagescience.deeplearning.nosgd.akka
 import akka.actor.{Actor, ActorRef, Props}
 import org.garagescience.deeplearning.nosgd._
 import org.garagescience.deeplearning.nosgd.linalg._
-import scala.collection.immutable.{Seq => TSeq}
 
 class GerminalCentreSingletonController[T](m: Matrix[T],
                                         gca: ActorRef,
@@ -45,18 +44,13 @@ class GerminalCentreSingletonController[T](m: Matrix[T],
       killEverything()
 
 
-    case _ =>
-      log.info(s"${self.path} received unknown message from ${sender}")
+    case e =>
+      log.info(s"${self.path} received unknown message from ${sender}: ${e}")
   }
 
 }
 
 object GerminalCentreSingletonController {
-
-  /*
-  def props(matrix: Matrix, error: Matrix => Double, p: ActorRef): Props =
-    Props(new GerminalCentreController(matrix, error, p, 1000))
-    */
 
   def props[T](matrix: Matrix[T], p: ActorRef, iterations: Int): Props =
     Props(new GerminalCentreSingletonController(matrix, p, iterations))
