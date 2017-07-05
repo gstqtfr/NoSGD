@@ -45,21 +45,6 @@ object Pong {
 
 object GCSingletonController {
 
-  /*
-  private def randomMatrix(rows: Int, cols: Int, sz: Int) = {
-    val tmpArray = for {i <- 0 until sz} yield scala.util.Random.nextGaussian
-    new _DenseMatrix(rows, cols, tmpArray.toArray)
-  }
-
-
-  private final val target = new _DenseMatrix(3, 3,
-    Array(
-      0.0, 0.0, 0.0,
-      0.0, 0.0, 0.0,
-      0.0, 0.0, 0.0
-    )
-  )
-  */
 
   private final val target = LinalgUtils.zeroMatrix(3, 3, 3 * 3)
 

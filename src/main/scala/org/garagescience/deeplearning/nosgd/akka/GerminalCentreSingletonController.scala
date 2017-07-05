@@ -1,17 +1,9 @@
 package org.garagescience.deeplearning.nosgd.akka
 
 import akka.actor.{Actor, ActorRef, Props}
-import akka.event.Logging
-//import org.apache.spark.ml.linalg.Matrix
 import org.garagescience.deeplearning.nosgd._
 import org.garagescience.deeplearning.nosgd.linalg._
 import scala.collection.immutable.{Seq => TSeq}
-
-
-// TODO: MAKE THIS GENERIC!!!
-// TODO: there is *no* *reason* i can see that this can't be
-// TODO: type parameterised, so LET'S DO IT!!!
-// TODO: ... but not just yet ...
 
 class GerminalCentreSingletonController[T](m: Matrix[T],
                                         gca: ActorRef,
