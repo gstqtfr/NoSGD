@@ -1,7 +1,6 @@
 package org.garagescience.deeplearning.nosgd
 
 import scala.collection.immutable.{IndexedSeq, Seq}
-
 import Double2BitStringConvert._
 
 /**

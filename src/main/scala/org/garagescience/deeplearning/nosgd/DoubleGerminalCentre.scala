@@ -12,23 +12,24 @@ class DoubleGerminalCentre(protected val d: Double,
   import Double2BitStringConvert._
 
   // create our clonal pool
-  var clones: Seq[Double] = for {i <- 0 until poolSize} yield d
+  var clones: Array[Double] = (for {i <- 0 until poolSize} yield d).toArray
 
   // this hypermutates our clonal pool & returns it
   /**
     * germinate hypermutates the clonal pool
     * @return mutated clones of the original clonal pool
     */
-  def germinate: Seq[Double] = clones.map(clone => somaticHypermutation(new StringBuffer(toBinaryString(clone))))
+  def germinate: Array[Double] =
+    clones.map(clone => somaticHypermutation(new StringBuffer(toBinaryString(clone)))).toArray
 
   /**
     * Updates the population of clones according to the fitness/error function
     * @param f fitness/error/loss function
     */
-  def update(f: Double => Double) = {
+  def update(f: Double => Double): Unit = {
     // this gets us a mutated version of our clones
-    val _clones = germinate
-    clones = compareAndReplace(clones, _clones, f)
+    val _clones: Array[Double] = germinate
+    clones = compareAndReplace(clones.toArray, _clones, f)
   }
 
   /**
@@ -39,9 +40,10 @@ class DoubleGerminalCentre(protected val d: Double,
     * @param f Fitness/error/loss function
     * @return The fittest clones from the two lists according to the function f
     */
-  def compareAndReplace(l1: Seq[Double], l2: Seq[Double], f: Double => Double): Seq[Double] =
+  // TODO: apply higher-kinded types here?
+  def compareAndReplace(l1: Array[Double], l2: Array[Double], f: Double => Double): Array[Double] =
     l1.zip(l2).map { case (c, m) =>
       if (f(c) < f(m)) c else m
-  }
+    }
 
 }

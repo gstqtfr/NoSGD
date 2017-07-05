@@ -1,7 +1,7 @@
 package org.garagescience.deeplearning.nosgd
 
 import scala.collection.immutable.Seq
-import org.apache.spark.ml.linalg.{Matrices, Matrix, Vector, Vectors}
+//import org.apache.spark.ml.linalg.{Matrices, Matrix=>LMatrix, Vector, Vectors}
 import org.garagescience.deeplearning.nosgd.linalg._
 
 // TODO: this has *got* to be type-parameterised!!!
@@ -17,17 +17,17 @@ import org.garagescience.deeplearning.nosgd.linalg._
 
 // can now type-param quite easily ...
 
-class LinalgMatrixGerminalCentre(protected val m: _Matrix[Double],
+class LinalgMatrixGerminalCentre(protected val m: Matrix[Double],
                                  //protected val popSize: Int = 10,
                                  protected val poolSize: Int = 20) extends Hypermutate {
 
   import Matrix2BinarySeq._
 
-  val rows = m.numRows
-  val cols = m.numCols
+  val rows = m.height
+  val cols = m.width
 
   // create our clonal pool (var?!)
-  var clones: Seq[_Matrix[Double]] = for {i <- 0 until poolSize} yield m
+  var clones: Array[Matrix[Double]] = { for {i <- 0 until poolSize} yield m }.toArray
 
   // initialise our germinal centres
   val centres: Seq[DoubleGerminalCentre] = for {i <- 0 until poolSize
@@ -37,28 +37,34 @@ class LinalgMatrixGerminalCentre(protected val m: _Matrix[Double],
 
   // germinal centres apply the somatic hypermutation operator to their
   // clonal pools
+  protected def germinate: Array[Array[Double]] = centres.map(gc => gc.germinate).toArray
 
-  protected def germinate: Seq[Seq[Double]] = centres.map(gc => gc.germinate)
-
-  protected def compareAndReplace(l1: Seq[_Matrix[Double]],
-                                  l2: Seq[_Matrix[Double]],
-                                  f: _Matrix[Double] => Double): Seq[(_Matrix[Double], Double)] =
+  protected def compareAndReplace(l1: Array[Matrix[Double]],
+                                  l2: Array[Matrix[Double]],
+                                  f: Matrix[Double] => Double): Array[(Matrix[Double], Double)] =
     l1.zip(l2).map { case (c, m) =>
       val f_of_c = f(c)
       val f_of_m = f(m)
       if (f(c) < f(m)) (c, f_of_c) else (m, f_of_m)
     }
 
-  def getFittest(f: _Matrix[Double] => Double): Seq[_Matrix[Double]] = {
+  def getFittest(f: Matrix[Double] => Double): Array[Matrix[Double]] =
     clones.sortWith { case (a,b) => f(a) < f(b) }
-  }
+
+
+  def fromArray(rows: Int, xs: Array[Double]): Array[Vector[Double]] =
+    xs.grouped(cols).toArray.map(a => Vector(a: _*))
+
 
   // TODO: need to look out for:
   // TODO: java.lang.IllegalArgumentException
   // TODO: on Matrix dims ...
-  def update(f: _Matrix[Double] => Double): Seq[Double] = {
-    val _clones: Seq[_Matrix[Double]] = germinate.map(xs => new _DenseMatrix(rows, cols, xs.toArray))
-    val clonesAndFitness: Seq[(_Matrix[Double], Double)] = compareAndReplace(clones, _clones, f)
+  def update(f: Matrix[Double] => Double): Array[Double] = {
+    val _clones: Array[Matrix[Double]] =
+      // TODO: right, let's get this sorted ...
+      germinate.map((xs: Array[Double]) => Matrix.atRow(0)(fromArray(3, xs): _*))
+
+    val clonesAndFitness = compareAndReplace(clones, _clones, f)
     clones = clonesAndFitness.map { case (c,f) => c }
     clonesAndFitness.map { case (c,f) => f }
   }

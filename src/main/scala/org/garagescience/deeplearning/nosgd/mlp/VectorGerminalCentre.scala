@@ -10,8 +10,7 @@ class VectorGerminalCentre(protected val v: Vector,
                            protected val popSize: Int=10,
                            protected val poolSize: Int=20) extends Hypermutate {
 
-  import Double2BitStringConvert._
-  import Vector2BinarySeq._
+
 
   // create our clonal pool (var?!)
   var clones: Seq[Vector] = for {i <- 0 until popSize} yield v
@@ -23,7 +22,7 @@ class VectorGerminalCentre(protected val v: Vector,
 
   // germinal centres apply the somatic hypermutation operator to their
   // clonal pools
-  def germinate: Seq[Seq[Double]] = centres.map(gc => gc.germinate)
+  def germinate: Seq[Array[Double]] = centres.map(gc => gc.germinate)
 
   def update(f: Vector => Double) = {
     val _clones: Seq[Vector] = germinate.map(xs => Vectors.dense(xs.toArray))

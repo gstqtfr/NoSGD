@@ -10,7 +10,7 @@ object TestGerminalCentre1 {
 
   def error(d: Double) = Math.abs(target - d)
 
-  def getRMSE(xs: Seq[Double]): Double = xs.sum / popSize
+  def getRMSE(xs: Array[Double]): Double = xs.sum / popSize
 
   def main(args: Array[String]): Unit = {
 
@@ -21,8 +21,8 @@ object TestGerminalCentre1 {
     for (i <- 0 until iterations) {
 
       gcs.map(gc => gc.update(error))
-      val cloneattack: Seq[Seq[Double]] = gcs.map(gc => gc.clones)
-      val errors: Seq[Seq[Double]] = gcs.map(gc => gc.clones).
+      val cloneattack: Seq[Array[Double]] = gcs.map(gc => gc.clones)
+      val errors: Seq[Array[Double]] = gcs.map(gc => gc.clones).
         map(xs => xs.map(d => error(d)))
 
       errors.foreach(xs => println(s"$i ${getRMSE(xs)}"))
