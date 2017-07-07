@@ -2,9 +2,7 @@ package org.garagescience.deeplearning.nosgd
 
 import scala.collection.immutable.{Seq=>TSeq}
 
-// TODO: bear in mind parallelisation here ...
-
-// TODO: PARALLELISE!!! Actor or Future. GET IT SORTED!!!
+// TODO: type param?!
 
 class DoubleGerminalCentre(protected val d: Double,
                            protected val poolSize: Int=20)
@@ -15,13 +13,14 @@ class DoubleGerminalCentre(protected val d: Double,
   // create our clonal pool
   var clones: Array[Double] = (for {i <- 0 until poolSize} yield d).toArray
 
+  // TODO: need to be able to deal with this if it's to be type-param'd
   // this hypermutates our clonal pool & returns it
   /**
     * germinate hypermutates the clonal pool
     * @return mutated clones of the original clonal pool
     */
   override def germinate: Array[Double] =
-    clones.map(clone => somaticHypermutation(new StringBuffer(toBinaryString(clone)))).toArray
+    clones.map(clone => somaticHypermutation(new StringBuffer(toBinaryString(clone))))
 
   /**
     * Updates the population of clones according to the fitness/error function
@@ -30,7 +29,7 @@ class DoubleGerminalCentre(protected val d: Double,
   override def update(f: Double => Double): Unit = {
     // this gets us a mutated version of our clones
     val _clones: Array[Double] = germinate
-    clones = compareAndReplace(clones.toArray, _clones, f)
+    clones = compareAndReplace(clones, _clones, f)
   }
 
   /**

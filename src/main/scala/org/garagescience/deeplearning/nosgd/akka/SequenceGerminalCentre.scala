@@ -21,7 +21,6 @@ trait SequenceGerminalCentre[M[_], A, B] {
 
   def update(f: M[A] => B): Array[B]
 
-  // gc.clones.map(xs => error(xs))
   def getClonePoolFitness(f: M[A] => B): Array[B]
 
 }

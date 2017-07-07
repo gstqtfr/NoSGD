@@ -9,11 +9,12 @@ import scala.language.postfixOps
 // TODO: type parameterise this code!!! Matrix=>T? LinalgMatrixGerminalCentre=>T?
 
 class GerminalCentreActor(m: Matrix[Double],
-                          error: Matrix[Double] => Double) extends Actor {
+                          error: Matrix[Double] => Double,
+                          gc: SequenceGerminalCentre[Matrix, Double, Double]) extends Actor {
 
   // TODO: this'll be problematic for type param, unless we pass it in
   // TODO: as a param to the ctor ...
-  private val gc: MatrixGerminalCentre = new MatrixGerminalCentre(m)
+  //private val gc: MatrixGerminalCentre = new MatrixGerminalCentre(m)
   private val log = Logging(context.system, this)
 
   def receive = {
@@ -51,6 +52,6 @@ object GerminalCentreActor {
   // best practise is to put the props close to where the
   // actor itself is init'd
   def props(m: Matrix[Double], error: Matrix[Double] => Double): Props =
-    Props(new GerminalCentreActor(m, error))
+    Props(new GerminalCentreActor(m, error, new MatrixGerminalCentre(m)))
 
 }
