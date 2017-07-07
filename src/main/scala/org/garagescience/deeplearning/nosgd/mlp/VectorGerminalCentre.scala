@@ -13,7 +13,6 @@ class VectorGerminalCentre(protected val v: Vector,
                            protected val poolSize: Int=20) extends Hypermutate {
 
 
-
   // create our clonal pool (var?!)
   var clones: Seq[Vector] = for {i <- 0 until popSize} yield v
 

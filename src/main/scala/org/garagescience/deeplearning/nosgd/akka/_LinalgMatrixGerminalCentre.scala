@@ -7,6 +7,7 @@ trait _LinalgMatrixGerminalCentre[M[_], A, B] {
 
   def rows: Int
   def cols: Int
+  def poolSize: Int
 
   val m: M[A]
 
@@ -17,5 +18,7 @@ trait _LinalgMatrixGerminalCentre[M[_], A, B] {
                         f: M[A] => B): (Array[(M[B], B)])
 
   def getFittest(f: M[A] => B): Array[M[B]]
+
+  def update(f: M[A] => B): Array[B]
 
 }

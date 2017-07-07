@@ -11,9 +11,12 @@ class SomHypeNetwork(sizes: Array[Int],
 
   var layers: Array[Layer] = sizes.zipWithIndex map { case (elem, idx) =>
     idx match {
-      case 0                              => new Layer(elem, sizes(idx + 1), learningRate, inputLayer=true)
-      case i if (idx == sizes.length - 1) => new Layer(elem, learningRate=learningRate, outputLayer=true)
-      case _                              => new Layer(elem, sizes(idx + 1), learningRate)
+      case 0                              =>
+        new Layer(elem, sizes(idx + 1), learningRate, inputLayer=true)
+      case i if (idx == sizes.length - 1) =>
+        new Layer(elem, learningRate=learningRate, outputLayer=true)
+      case _                              =>
+        new Layer(elem, sizes(idx + 1), learningRate)
     }
   }
 

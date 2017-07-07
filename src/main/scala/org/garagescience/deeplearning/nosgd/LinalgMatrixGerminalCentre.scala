@@ -3,28 +3,13 @@ package org.garagescience.deeplearning.nosgd
 import scala.collection.immutable.{Seq => TSeq}
 import org.garagescience.deeplearning.nosgd.linalg._
 
-// TODO: this has *got* to be type-parameterised!!!
-// TODO: I'M NOT FUCKING KIDDING!!! this MUST BE PARAMETERISED!!!
-
-// TODO: WHAT WE NEED is to type-parameterise using HIGHER KINDED TYPES!!!
-
-// TODO: one way of doing this would be to have a Dimensions param here, since
-// TODO: about the only problem would be with the rows & columns - this is
-// TODO: *CLEARLY* a tuple, e.g. Tuple2!!!
-
-// TODO: this is a nice idea. but bollox to it, it'll take too long just now ...
-
-// can now type-param quite easily ...
 
 class LinalgMatrixGerminalCentre(override val m: Matrix[Double],
-                                 //protected val popSize: Int = 10,
-                                 val poolSize: Int = 20)
+                                 override val poolSize: Int = 20)
   extends Hypermutate with _LinalgMatrixGerminalCentre[Matrix, Double, Double] {
 
-  //import Matrix2BinarySeq._
-
-  val rows = m.height
-  val cols = m.width
+  override val rows = m.height
+  override val cols = m.width
 
   // create our clonal pool (var?!)
   var clones: Array[Matrix[Double]] = {
@@ -61,11 +46,10 @@ class LinalgMatrixGerminalCentre(override val m: Matrix[Double],
   // TODO: need to look out for:
   // TODO: java.lang.IllegalArgumentException
   // TODO: on Matrix dims ...
-  def update(f: Matrix[Double] => Double): Array[Double] = {
+  override def update(f: Matrix[Double] => Double): Array[Double] = {
     val _clones: Array[Matrix[Double]] =
-    // TODO: right, let's get this sorted ...
+      // TODO: fromArray(3)?!? shurely shome mishtake!!!??!?!
       germinate.map((xs: Array[Double]) => Matrix.atRow(0)(fromArray(3, xs): _*))
-
     val clonesAndFitness = compareAndReplace(clones, _clones, f)
     clones = clonesAndFitness.map { case (c, f) => c }
     clonesAndFitness.map { case (c, f) => f }

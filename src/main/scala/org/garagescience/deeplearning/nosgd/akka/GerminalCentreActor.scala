@@ -6,13 +6,13 @@ import org.garagescience.deeplearning.nosgd.linalg._
 import org.garagescience.deeplearning.nosgd._
 import scala.language.postfixOps
 
-// TODO: type parameterise this code!!! Matrix=>T
+// TODO: type parameterise this code!!! Matrix=>T? LinalgMatrixGerminalCentre=>T?
 
 class GerminalCentreActor(m: Matrix[Double], error: Matrix[Double] => Double) extends Actor {
 
   // TODO: this'll be problematic for type param, unless we pass it in
   // TODO: as a param to the ctor ...
-  private val gc = new LinalgMatrixGerminalCentre(m)
+  private val gc: LinalgMatrixGerminalCentre = new LinalgMatrixGerminalCentre(m)
   private val log = Logging(context.system, this)
 
   def receive = {
