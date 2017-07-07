@@ -1,7 +1,6 @@
 package org.garagescience.deeplearning.nosgd
 
 import scala.language.higherKinds
-import org.garagescience.deeplearning.nosgd.linalg._
 
 // TODO: might be worth adding a B type param. here ...
 trait _LinalgMatrixGerminalCentre[M[_], A] {
