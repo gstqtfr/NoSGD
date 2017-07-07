@@ -1,5 +1,7 @@
 package org.garagescience.deeplearning.nosgd
 
+// TODO: do we need this?!? if not, let's nuke it
+
 import scala.collection.immutable.Seq
 import org.apache.spark.ml.linalg.{Matrices, Matrix, Vector, Vectors}
 

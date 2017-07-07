@@ -27,17 +27,20 @@ class FeedForwardNeuralNetwork( _neuronCounts: Seq[Int],
   // error function
   def error(eta: DenseVector[Double]) = h(M).map(activationFunction.derivative) :* (eta - V(M))
 
+
+
   def trainImpl(input: Seq[Double], desiredResult: Seq[Double]): Unit = {
     assert(input.length == V(0).length - 1)
     assert(desiredResult.length == V(M).length)
 
     classify(input) //sets V and h
 
-
     // TODO: hmm ... so i think ... not sure why this is copied here ...
-    val eta: DenseVector[Double] = DenseVector(desiredResult : _*)
+    // TODO: so why not just subtract V(M) here?
+    // TODO: yep, that works fine ...
+    val eta: DenseVector[Double] = DenseVector(desiredResult : _*) - V(M)
 
-    delta(M) := error(eta)
+    delta(M) := getError(eta, h(M), activationFunction.derivative)
 
     //backpropagation - last layer
     // TODO: so i guess this is the error. yep, it's the error.

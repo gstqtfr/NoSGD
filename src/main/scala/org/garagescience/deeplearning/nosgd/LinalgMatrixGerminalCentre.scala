@@ -1,6 +1,6 @@
 package org.garagescience.deeplearning.nosgd
 
-import scala.collection.immutable.{Seq=>TSeq}
+import scala.collection.immutable.{Seq => TSeq}
 import org.garagescience.deeplearning.nosgd.linalg._
 
 // TODO: this has *got* to be type-parameterised!!!
@@ -16,9 +16,10 @@ import org.garagescience.deeplearning.nosgd.linalg._
 
 // can now type-param quite easily ...
 
-class LinalgMatrixGerminalCentre(protected val m: Matrix[Double],
+class LinalgMatrixGerminalCentre(override val m: Matrix[Double],
                                  //protected val popSize: Int = 10,
-                                 protected val poolSize: Int = 20) extends Hypermutate {
+                                 val poolSize: Int = 20)
+  extends Hypermutate with _LinalgMatrixGerminalCentre[Matrix, Double] {
 
   //import Matrix2BinarySeq._
 
@@ -26,29 +27,31 @@ class LinalgMatrixGerminalCentre(protected val m: Matrix[Double],
   val cols = m.width
 
   // create our clonal pool (var?!)
-  var clones: Array[Matrix[Double]] = { for {i <- 0 until poolSize} yield m }.toArray
+  var clones: Array[Matrix[Double]] = {
+    for {i <- 0 until poolSize} yield m
+  }.toArray
 
   // initialise our germinal centres
   val centres: TSeq[DoubleGerminalCentre] = for {i <- 0 until poolSize
-                     row <- 0 until rows
-                     col <- 0 until cols}
+                                                 row <- 0 until rows
+                                                 col <- 0 until cols}
     yield new DoubleGerminalCentre(m(row, col), rows * cols)
 
   // germinal centres apply the somatic hypermutation operator to their
   // clonal pools
-  protected def germinate: Array[Array[Double]] = centres.map(gc => gc.germinate).toArray
+  override def germinate: Array[Array[Double]] = centres.map(gc => gc.germinate).toArray
 
-  protected def compareAndReplace(l1: Array[Matrix[Double]],
-                                  l2: Array[Matrix[Double]],
-                                  f: Matrix[Double] => Double): Array[(Matrix[Double], Double)] =
+  override def compareAndReplace(l1: Array[Matrix[Double]],
+                                 l2: Array[Matrix[Double]],
+                                 f: Matrix[Double] => Double): Array[(Matrix[Double], Double)] =
     l1.zip(l2).map { case (c, m) =>
       val f_of_c = f(c)
       val f_of_m = f(m)
       if (f(c) < f(m)) (c, f_of_c) else (m, f_of_m)
     }
 
-  def getFittest(f: Matrix[Double] => Double): Array[Matrix[Double]] =
-    clones.sortWith { case (a,b) => f(a) < f(b) }
+  override def getFittest(f: Matrix[Double] => Double): Array[Matrix[Double]] =
+    clones.sortWith { case (a, b) => f(a) < f(b) }
 
 
   def fromArray(rows: Int, xs: Array[Double]): Array[Vector[Double]] =
@@ -60,12 +63,12 @@ class LinalgMatrixGerminalCentre(protected val m: Matrix[Double],
   // TODO: on Matrix dims ...
   def update(f: Matrix[Double] => Double): Array[Double] = {
     val _clones: Array[Matrix[Double]] =
-      // TODO: right, let's get this sorted ...
+    // TODO: right, let's get this sorted ...
       germinate.map((xs: Array[Double]) => Matrix.atRow(0)(fromArray(3, xs): _*))
 
     val clonesAndFitness = compareAndReplace(clones, _clones, f)
-    clones = clonesAndFitness.map { case (c,f) => c }
-    clonesAndFitness.map { case (c,f) => f }
+    clones = clonesAndFitness.map { case (c, f) => c }
+    clonesAndFitness.map { case (c, f) => f }
   }
 
 }

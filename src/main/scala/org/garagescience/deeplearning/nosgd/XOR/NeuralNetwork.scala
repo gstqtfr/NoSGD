@@ -19,7 +19,7 @@ trait NeuralNetwork {
   /**
     * the classification function to be implemented by subclasses
     */
-  protected def classifyImpl(input: Seq[Double]): Seq[Double]
+  def feedforward(input: Seq[Double]): Seq[Double]
 
   /**
     * wraps the `classifyImpl` method with bounds check.
@@ -35,7 +35,7 @@ trait NeuralNetwork {
   def classify(input: Seq[Double]): Seq[Double] = {
     require(input.forall(activationFunction.withinBounds(_)), oob)
 
-    classifyImpl(input)
+    feedforward(input)
   }
 
   /**
@@ -153,7 +153,15 @@ abstract class _NeuralNetwork(_neuronCounts: Seq[Int],
     */
   val w: Buffer[DenseMatrix[Double]] = _w.toBuffer
 
-  def classifyImpl(input: Seq[Double]): Seq[Double] = {
+  // slightly more general version of the error function, suitable for passing as a
+  // h-o-f to e.g. somatic hypermutation; N.B. this only works on the output layer
+  // errors ATM
+  def getError(delta: DenseVector[Double],
+               weights: DenseVector[Double],
+               f: Double => Double): DenseVector[Double] = weights.map(f) *:* delta
+
+
+  def feedforward(input: Seq[Double]): Seq[Double] = {
     assert(input.length == V(0).length - 1)
 
     V(0) := DenseVector((BIAS_VALUE +: input) : _*) //setting the input layer values
