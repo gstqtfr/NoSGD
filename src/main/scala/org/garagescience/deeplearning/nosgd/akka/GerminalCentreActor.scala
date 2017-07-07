@@ -8,11 +8,12 @@ import scala.language.postfixOps
 
 // TODO: type parameterise this code!!! Matrix=>T? LinalgMatrixGerminalCentre=>T?
 
-class GerminalCentreActor(m: Matrix[Double], error: Matrix[Double] => Double) extends Actor {
+class GerminalCentreActor(m: Matrix[Double],
+                          error: Matrix[Double] => Double) extends Actor {
 
   // TODO: this'll be problematic for type param, unless we pass it in
   // TODO: as a param to the ctor ...
-  private val gc: LinalgMatrixGerminalCentre = new LinalgMatrixGerminalCentre(m)
+  private val gc: MatrixGerminalCentre = new MatrixGerminalCentre(m)
   private val log = Logging(context.system, this)
 
   def receive = {
@@ -24,7 +25,9 @@ class GerminalCentreActor(m: Matrix[Double], error: Matrix[Double] => Double) ex
 
     case GetErrorsGC =>
       log.info(s"${self.path} received ErrorsGC")
-      val errors: Array[Double] = gc.clones.map(xs => error(xs))
+      // getFittestClones(xs: Array[Matrix[Double]],
+      //                  f: Matrix[Double] => Double): Array[Double]
+      val errors: Array[Double] = gc.getClonePoolFitness(error)
       log.info(s"${self.path} errors: $errors")
       sender ! ErrorsGC(errors)
 

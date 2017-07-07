@@ -70,8 +70,8 @@ object TestMatrixGerminalCentre1 {
 
   def main(args: Array[String]): Unit = {
 
-    val mgc: IndexedSeq[LinalgMatrixGerminalCentre] = for {i <- 0 until popSize}
-      yield new LinalgMatrixGerminalCentre(randomMatrix(
+    val mgc: IndexedSeq[MatrixGerminalCentre] = for {i <- 0 until popSize}
+      yield new MatrixGerminalCentre(randomMatrix(
         target.height,
         target.width
       ), poolSize)

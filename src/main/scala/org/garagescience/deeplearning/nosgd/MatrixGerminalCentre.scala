@@ -4,9 +4,11 @@ import scala.collection.immutable.{Seq => TSeq}
 import org.garagescience.deeplearning.nosgd.linalg._
 
 
-class LinalgMatrixGerminalCentre(override val m: Matrix[Double],
-                                 override val poolSize: Int = 20)
-  extends Hypermutate with _LinalgMatrixGerminalCentre[Matrix, Double, Double] {
+// TODO: param. on Double here?!!?
+
+class MatrixGerminalCentre(override val m: Matrix[Double],
+                           override val poolSize: Int = 20)
+  extends Hypermutate with SequenceGerminalCentre[Matrix, Double, Double] {
 
   override val rows = m.height
   override val cols = m.width
@@ -17,6 +19,9 @@ class LinalgMatrixGerminalCentre(override val m: Matrix[Double],
   }.toArray
 
   // initialise our germinal centres
+  // TODO: need to think about this - going to really muck up type-param on this ...
+  // TODO: the thing to do here is to create a trait for DoubleGerminalCentre
+  // TODO: then we can pass the trait as a param & then type param this ...
   val centres: TSeq[DoubleGerminalCentre] = for {i <- 0 until poolSize
                                                  row <- 0 until rows
                                                  col <- 0 until cols}
@@ -38,6 +43,9 @@ class LinalgMatrixGerminalCentre(override val m: Matrix[Double],
   override def getFittest(f: Matrix[Double] => Double): Array[Matrix[Double]] =
     clones.sortWith { case (a, b) => f(a) < f(b) }
 
+  override def getClonePoolFitness(f: Matrix[Double] => Double): Array[Double] =
+    clones.map(xs => f(xs))
+
 
   def fromArray(rows: Int, xs: Array[Double]): Array[Vector[Double]] =
     xs.grouped(cols).toArray.map(a => Vector(a: _*))
@@ -48,7 +56,7 @@ class LinalgMatrixGerminalCentre(override val m: Matrix[Double],
   // TODO: on Matrix dims ...
   override def update(f: Matrix[Double] => Double): Array[Double] = {
     val _clones: Array[Matrix[Double]] =
-      // TODO: fromArray(3)?!? shurely shome mishtake!!!??!?!
+    // TODO: fromArray(3)?!? shurely shome mishtake!!!??!?!
       germinate.map((xs: Array[Double]) => Matrix.atRow(0)(fromArray(3, xs): _*))
     val clonesAndFitness = compareAndReplace(clones, _clones, f)
     clones = clonesAndFitness.map { case (c, f) => c }
