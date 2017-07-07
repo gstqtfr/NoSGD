@@ -3,7 +3,7 @@ package org.garagescience.deeplearning.nosgd
 import scala.language.higherKinds
 
 // TODO: might be worth adding a B type param. here ...
-trait _LinalgMatrixGerminalCentre[M[_], A] {
+trait _LinalgMatrixGerminalCentre[M[_], A, B] {
 
   def rows: Int
   def cols: Int
@@ -14,8 +14,8 @@ trait _LinalgMatrixGerminalCentre[M[_], A] {
 
   def compareAndReplace(l1: Array[M[A]],
                         l2: Array[M[A]],
-                        f: M[A] => A): (Array[(M[A], A)])
+                        f: M[A] => B): (Array[(M[B], B)])
 
-  def getFittest(f: M[A] => A): Array[M[A]]
+  def getFittest(f: M[A] => B): Array[M[B]]
 
 }

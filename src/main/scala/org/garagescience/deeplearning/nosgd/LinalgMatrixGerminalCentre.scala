@@ -19,7 +19,7 @@ import org.garagescience.deeplearning.nosgd.linalg._
 class LinalgMatrixGerminalCentre(override val m: Matrix[Double],
                                  //protected val popSize: Int = 10,
                                  val poolSize: Int = 20)
-  extends Hypermutate with _LinalgMatrixGerminalCentre[Matrix, Double] {
+  extends Hypermutate with _LinalgMatrixGerminalCentre[Matrix, Double, Double] {
 
   //import Matrix2BinarySeq._
 
