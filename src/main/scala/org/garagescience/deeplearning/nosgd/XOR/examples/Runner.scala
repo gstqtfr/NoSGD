@@ -68,6 +68,7 @@ object Runner {
       }
     }
   }
+
   def main(args: Array[String]): Unit = {
     time {
       //choose the example you want to run

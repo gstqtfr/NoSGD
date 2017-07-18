@@ -25,7 +25,7 @@ object GCMultipleController {
   private def creatActor(sys: ActorSystem,
                          _init: () => Matrix[Double],
                         _error: Matrix[Double] => Double): ActorRef = {
-    sys.actorOf(GerminalCentreActor.props(_init(), _error))
+    sys.actorOf(GerminalCentreMatrixActor.props(_init(), _error))
   }
 
   private final val popSz = 10

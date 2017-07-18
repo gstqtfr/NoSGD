@@ -1,7 +1,6 @@
 package org.garagescience.deeplearning.nosgd.XOR
 
 import breeze.linalg.{DenseMatrix, DenseVector}
-
 import scala.collection.mutable.Buffer
 
 /**
@@ -15,6 +14,9 @@ trait NeuralNetwork {
     "The `teach` and `classify` vectors' arguments' values should be within bounds of activationFunction"
 
   def activationFunction: ActivationFunction
+
+  def getWeights
+
 
   /**
     * the classification function to be implemented by subclasses
@@ -126,7 +128,7 @@ abstract class _NeuralNetwork(_neuronCounts: Seq[Int],
   /**
     * activation vectors
     */
-  protected val h: Buffer[DenseVector[Double]] =
+  val h: Buffer[DenseVector[Double]] =
     (neuronCounts map { layerCount => DenseVector.ones[Double](layerCount)}).toBuffer
 
   /**
@@ -153,9 +155,12 @@ abstract class _NeuralNetwork(_neuronCounts: Seq[Int],
     */
   val w: Buffer[DenseMatrix[Double]] = _w.toBuffer
 
+  def getWeights: Buffer[DenseMatrix[Double]] = w
+
   // slightly more general version of the error function, suitable for passing as a
   // h-o-f to e.g. somatic hypermutation; N.B. this only works on the output layer
   // errors ATM
+  // TODO: rewrite!!! weights == w == Buffer[DenseMatrix[Double]]! FFS!!!
   def getError(delta: DenseVector[Double],
                weights: DenseVector[Double],
                f: Double => Double): DenseVector[Double] = weights.map(f) *:* delta

@@ -67,7 +67,7 @@ object GCSingletonController {
       target.toArray.length)
 
     val gca: ActorRef = system.
-      actorOf(GerminalCentreActor.props(init, error),
+      actorOf(GerminalCentreMatrixActor.props(init, error),
         name = "gca")
 
     val gcc: ActorRef = system.

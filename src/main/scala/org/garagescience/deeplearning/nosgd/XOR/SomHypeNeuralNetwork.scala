@@ -26,9 +26,16 @@ class SomHypeNeuralNetwork(_neuronCounts: Seq[Int],
 
     classify(input) //sets V and h
 
-    val eta: DenseVector[Double] = DenseVector(desiredResult : _*) - V(M)
+    val eta: DenseVector[Double] = DenseVector(desiredResult: _*) - V(M)
 
     delta(M) := getError(eta, h(M), activationFunction.derivative)
+
+    // this returns the error of the output layer ...
+    delta(M)
+  }
+
+
+
 
 
     // this be the error: N.B., M is layerCount - 1
@@ -84,5 +91,5 @@ class SomHypeNeuralNetwork(_neuronCounts: Seq[Int],
 
 
 
-  }
+
 }

@@ -8,9 +8,9 @@ import scala.language.postfixOps
 
 // TODO: type parameterise this code!!! Matrix=>T? LinalgMatrixGerminalCentre=>T?
 
-class GerminalCentreActor(m: Matrix[Double],
-                          error: Matrix[Double] => Double,
-                          gc: SequenceGerminalCentre[Matrix, Double, Double]) extends Actor {
+class GerminalCentreMatrixActor(m: Matrix[Double],
+                                error: Matrix[Double] => Double,
+                                gc: SequenceGerminalCentre[Matrix, Double, Double]) extends Actor {
 
   // TODO: this'll be problematic for type param, unless we pass it in
   // TODO: as a param to the ctor ...
@@ -26,15 +26,13 @@ class GerminalCentreActor(m: Matrix[Double],
 
     case GetErrorsGC =>
       log.info(s"${self.path} received ErrorsGC")
-      // getFittestClones(xs: Array[Matrix[Double]],
-      //                  f: Matrix[Double] => Double): Array[Double]
       val errors: Array[Double] = gc.getClonePoolFitness(error)
       log.info(s"${self.path} errors: $errors")
       sender ! ErrorsGC(errors)
 
     case GetMinimumGC =>
       log.info(s"${self.path} received GetMinimumGC")
-      val _m = gc.getFittest(error).head
+      val _m: Matrix[Double] = gc.getFittest(error).head
       sender ! MinimumGC(_m)
 
 
@@ -47,11 +45,11 @@ class GerminalCentreActor(m: Matrix[Double],
   }
 }
 
-object GerminalCentreActor {
+object GerminalCentreMatrixActor {
 
   // best practise is to put the props close to where the
   // actor itself is init'd
   def props(m: Matrix[Double], error: Matrix[Double] => Double): Props =
-    Props(new GerminalCentreActor(m, error, new MatrixGerminalCentre(m)))
+    Props(new GerminalCentreMatrixActor(m, error, new MatrixGerminalCentre(m)))
 
 }

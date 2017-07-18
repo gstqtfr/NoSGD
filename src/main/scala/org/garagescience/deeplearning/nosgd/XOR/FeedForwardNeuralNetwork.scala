@@ -27,8 +27,6 @@ class FeedForwardNeuralNetwork( _neuronCounts: Seq[Int],
   // error function
   def error(eta: DenseVector[Double]) = h(M).map(activationFunction.derivative) :* (eta - V(M))
 
-
-
   def trainImpl(input: Seq[Double], desiredResult: Seq[Double]): Unit = {
     assert(input.length == V(0).length - 1)
     assert(desiredResult.length == V(M).length)
