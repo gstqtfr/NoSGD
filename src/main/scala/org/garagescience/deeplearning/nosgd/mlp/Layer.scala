@@ -1,39 +1,49 @@
 package org.garagescience.deeplearning.nosgd.mlp
 
-import scala.util.Random
-import org.apache.spark.ml.linalg.{Matrices, Matrix, Vector, Vectors}
+import org.jblas.DoubleMatrix
+import scala.language.implicitConversions
 
-/**
-  * Class representing a layer of neurons in a neural network
-  *
-  * @param size          Number of neuron in this layer
-  * @param learningRate  The learning rate to use for training
-  * @param inputLayer    Boolean that says if this layer is the input layer
-  * @param outputLayer   Boolean that says if this layer if the output layer
-  */
-class Layer(override val size: Int,
-            override val nextSize: Int=0,
-            override val learningRate: Double=0.01,
-            override val inputLayer: Boolean=false,
-            override val outputLayer: Boolean=false) extends _Layer {
+case class LayerState(compositionOutput: Option[DoubleMatrix], activationOutput: DoubleMatrix)
 
-  // TODO: JKK: do we need the overrides above?
+class Layer(val weights: DoubleMatrix, val activation: ActivationFunction) extends Serializable {
+  
+  def numInputs = weights.rows
+  def numOutputs = weights.columns
 
-  // TODO: okay. to get the error, we just need to compare the output of
-  // TODO: network with the target for this pattern. er, that's it.
+  def composition(x: DoubleMatrix): DoubleMatrix = weights.transpose.mmul(x)
 
-  // TODO: actually, this is more appropriate at the network layer, so
-  // TODO: let's do it there ...
+  def apply(x: DoubleMatrix): LayerState = {
+    val c = composition(x)
+    LayerState(Some(c), activation(c))
+  }
 
+  def copy(weights: DoubleMatrix = this.weights,
+    activation: ActivationFunction = this.activation): Layer =
+    new Layer(weights, activation)
+  
+}
 
-  // TODO: refactor?
-  override var (weights: Matrix, bias: Vector) = outputLayer match {
-    case true  => (Matrices.zeros(1, 1), Vectors.zeros(1))
-    case false =>
-      (Matrices.dense(nextSize, size, (for (i <- 0 to (nextSize * size - 1))
-        yield Random.nextDouble).toArray),
-        Vectors.dense((for (i <- 0 to (nextSize - 1))
-          yield Random.nextDouble).toArray))
+class PartialLayer(val numOutputs: Int, val activation: ActivationFunction)
+
+class LayerList(val layers: List[Layer]) {
+  def :+(partial: PartialLayer): LayerList =
+    new LayerList(layers:+Layer(layers.last.numOutputs, partial.numOutputs, partial.activation))
+}
+
+object Layer {
+  
+  implicit def layer2LayerList(layer: Layer) = new LayerList(List(layer))
+  implicit def layerList2list(list: LayerList) = list.layers
+
+  def apply(numInputs: Int, numOutputs: Int, activation: ActivationFunction): Layer =
+    new Layer(randomWeights(numInputs, numOutputs), activation)
+  
+  def apply(numOutputs: Int, activation: ActivationFunction): PartialLayer =
+    new PartialLayer(numOutputs, activation)
+
+  def randomWeights(numInputs: Int, numOutputs: Int, absMax: Double = 0.01): DoubleMatrix = {
+    val r = DoubleMatrix.rand(numOutputs, numInputs)
+    r.muli(2).subi(1).muli(absMax).transpose
   }
 
 }

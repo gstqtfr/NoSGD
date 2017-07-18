@@ -1,7 +1,6 @@
 package org.garagescience.deeplearning.nosgd.linalg
 
 import org.garagescience.deeplearning.nosgd.linalg.Vector.At
-
 import scala.collection.immutable.IndexedSeq
 
 object LinalgUtils {

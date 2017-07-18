@@ -17,6 +17,7 @@ class MatrixBuilderTest extends FunSuite {
 	    i <- rowRange
 	    j <- colRange
 	  } assert(expected(i-rowRange.start)(j-colRange.start) === actual(i,j))
+
   }
 
 	test("Building a matrix at default start indices is OK") {

@@ -12,8 +12,10 @@ import scala.reflect.ClassTag
  */
 trait MatrixBuilder[V, +M] extends Builder[V, M] {
 
-  protected var rowStart = 1;
+  //protected var rowStart = 1;
+  protected var rowStart = 0
 
+  //protected var rowStart = 0
   protected val elems = ArrayBuffer.empty[V]
 
   /**
@@ -66,5 +68,6 @@ class DefaultMatrixBuilder [E : ClassTag] private[linalg] extends MatrixBuilder[
   protected val zerovec = Vector[E]()
 
   def result () = MatrixFactory(rowStart, elems)
+
 
 }
