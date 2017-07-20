@@ -1,21 +1,3 @@
-/*
-  LinAlg - Scala Library for Vector and Matrix Types and Operations
-
-  Copyright 2015-2016 Hans-Hermann Bode
-
-  Licensed under the Apache License, Version 2.0 (the "License");
-  you may not use this file except in compliance with the License.
-  You may obtain a copy of the License at
-
-      http://www.apache.org/licenses/LICENSE-2.0
-
-  Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  See the License for the specific language governing permissions and
-  limitations under the License.
-*/
-
 /**
  *
  */
@@ -36,7 +18,9 @@ import scala.reflect.ClassTag
  *
  * @param [E] the element type
  */
-trait Vector [E] extends Iterable[E] with VectorLike[E, Vector[E]] with VectorStore[E] with Equals with Immutable {
+trait Vector [E] extends Iterable[E]
+  with VectorLike[E, Vector[E]]
+  with VectorStore[E] with Equals with Immutable {
 
   /**
    * @return the length of this vector
@@ -119,6 +103,7 @@ object Vector {
 
   class At (val index: Int)
 
+  // TODO: may have to hack this ...
   object At {
 	  implicit val Low = At(1)
 		def apply(i: Int) = new At(i)
