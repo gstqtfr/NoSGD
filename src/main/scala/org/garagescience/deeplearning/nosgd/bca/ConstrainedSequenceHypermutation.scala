@@ -1,12 +1,10 @@
 package org.garagescience.deeplearning.nosgd.bca
 
-import scala.collection.immutable.IndexedSeq
 import scala.language.higherKinds
 import scala.language.implicitConversions
 
 // TODO: replace the weakest clone (or maybe population member?) with new
 // TODO: randomised genetic material; shake things up!
-
 
 class ConstrainedSequenceHypermutation(val m: Array[Double],
                                        override val poolSize: Int = 20)

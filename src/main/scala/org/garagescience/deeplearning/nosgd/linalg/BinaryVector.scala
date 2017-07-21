@@ -92,6 +92,7 @@ object BinaryNumber {
 // val x: scala.collection.immutable.Vector[BinaryNumber] = scala.collection.immutable.Vector(0,1,1,1,0,0,1,0)
 // val x: Seq[BinaryNumber] = Seq(0,1,1,1,0,0,1,0)
 // works a treat - nifty ...
+
 object BinarySequence {
 
   import scala.collection.generic.CanBuildFrom
@@ -120,7 +121,7 @@ trait FixedBitVector[C[A] <: Traversable[A]] {
 
 }
 
-// implicit classes? stick in an object?
+// TODO: implicit classes? stick in an object?
 
 // usage: val bv = new BinaryVector(List(0,0,1,0,1,1,1,0))
 class BinaryVectorFromInt(val _data: List[Int]) extends FixedBitVector[List] {
