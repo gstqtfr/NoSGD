@@ -105,9 +105,9 @@ object BinarySequence {
 }
 
 
-trait FixedBitVector[C[A] <: Traversable[A]] {
+trait FixedBitVector[M[_]] {
 
-  val data: C[BinaryNumber]
+  val data: M[BinaryNumber]
 
   // this fixed exponent keeps everything in a relatively small range
   // [-0.5, 0.5], which'll do for this experiment; it can get
@@ -118,6 +118,14 @@ trait FixedBitVector[C[A] <: Traversable[A]] {
   final val fixedLength = 64
   // the bits we can actually update, the mantissa & the sign bit
   final val length = 52
+
+
+  /*def apply(index: Int) = {
+    if ((index < 0) || (index > length-1)) {
+      throw new IndexOutOfBoundsException(s"index $index out of bounds")
+    }
+    data.toArray[BinaryNumber](index)
+  }*/
 
 }
 
