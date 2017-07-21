@@ -55,6 +55,7 @@ class BinarySequencePointHypermutation(bn: BinaryNumber,
 
   // we pass germinate a clone, & it performs hypermutation on it
   def hypermutate(bn: BinaryNumber) = {
+    val _hotspots = getHotspots
 
   }
 

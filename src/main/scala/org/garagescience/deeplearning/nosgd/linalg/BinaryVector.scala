@@ -105,9 +105,27 @@ object BinarySequence {
 }
 
 
-trait FixedBitVector[M[_]] {
 
-  val data: M[BinaryNumber]
+  /*
+
+  def apply(index: Int): A = {
+    val idx = checkRangeConvert(index)
+    //println("get elem: "+index + "/"+idx + "(focus:" +focus+" xor:"+(idx^focus)+" depth:"+depth+")")
+    getElem(idx, idx ^ focus)
+  }
+
+  private def checkRangeConvert(index: Int) = {
+    val idx = index + startIndex
+    if (0 <= index && idx < endIndex)
+      idx
+    else
+      throw new IndexOutOfBoundsException(index.toString)
+  }
+
+   */
+
+
+trait _FixedBitVector {
 
   // this fixed exponent keeps everything in a relatively small range
   // [-0.5, 0.5], which'll do for this experiment; it can get
@@ -120,63 +138,81 @@ trait FixedBitVector[M[_]] {
   final val length = 52
 
 
-  /*def apply(index: Int) = {
+}
+
+
+
+
+class FixedBitVector(protected val data: List[BinaryNumber]) extends _FixedBitVector {
+
+  private def checkRangeConvert(index: Int) = {
     if ((index < 0) || (index > length-1)) {
       throw new IndexOutOfBoundsException(s"index $index out of bounds")
     }
-    data.toArray[BinaryNumber](index)
-  }*/
+    index
+  }
+
+  def apply(index: Int): BinaryNumber = {
+    val idx = checkRangeConvert(index)
+    data(index)
+  }
 
 }
+
 
 // TODO: implicit classes? stick in an object?
+// TODO: test THE FUCK out of this!!!
 
-// usage: val bv = new BinaryVector(List(0,0,1,0,1,1,1,0))
-class BinaryVectorFromInt(val _data: List[Int]) extends FixedBitVector[List] {
+object FixedBitVector {
 
-  override val data: List[BinaryNumber] = _data.map { elem =>
-    val b: BinaryNumber = elem
-    b
-  }
-}
+  // usage: val bv = new BinaryVector(List(0,0,1,0,1,1,1,0))
+  implicit class BinaryVectorFromInt(val _data: List[Int]) {
 
-// usage:
-// val d = - scala.util.Random.nextDouble
-// val xc = java.lang.Long.toBinaryString(java.lang.Double.doubleToRawLongBits(d)).toList
-// val bvfc = new BinaryVectorFromChar(xc)
-
-class BinaryVectorFromChar(val _data: List[Char]) extends FixedBitVector[List] {
-
-  override val data: List[BinaryNumber] = _data.map { elem =>
-    val b: BinaryNumber = elem
-    b
-  }
-}
-
-
-class CharSeqFromBinaryVector(xs: List[BinaryNumber]) {
-
-  val data: List[Char] = xs.map { elem: BinaryNumber =>
-    elem match {
-      case Zero => '0'
-      case One => '1'
-      case _ => '0'
-    }
-  }
-}
-
-class IntSeqFromBinaryVector(xs: List[BinaryNumber]) {
-
-  val data: List[Int] = xs.map { elem: BinaryNumber =>
-    elem match {
-      case Zero => 0
-      case One => 1
-      case _ => 0
+    def data: List[BinaryNumber] = _data.map { elem =>
+      val b: BinaryNumber = elem
+      b
     }
   }
 
-}
+  // usage:
+  // val d = - scala.util.Random.nextDouble
+  // val xc = java.lang.Long.toBinaryString(java.lang.Double.doubleToRawLongBits(d)).toList
+  // val bvfc = new BinaryVectorFromChar(xc)
+  // val xs = bvfc.data
 
+  implicit class BinaryVectorFromChar(val _data: List[Char]) {
+
+    def data: List[BinaryNumber] = _data.map { elem =>
+      val b: BinaryNumber = elem
+      b
+    }
+  }
+
+
+  implicit class CharSeqFromBinaryVector(xs: List[BinaryNumber]) {
+
+    def data: List[Char] = xs.map { elem: BinaryNumber =>
+      elem match {
+        case Zero => '0'
+        case One => '1'
+        case _ => '0'
+      }
+    }
+  }
+
+  implicit class IntSeqFromBinaryVector(xs: List[BinaryNumber]) {
+
+    def data: List[Int] = xs.map { elem: BinaryNumber =>
+      elem match {
+        case Zero => 0
+        case One => 1
+        case _ => 0
+      }
+    }
+
+  }
+
+}
 
 /*
 
