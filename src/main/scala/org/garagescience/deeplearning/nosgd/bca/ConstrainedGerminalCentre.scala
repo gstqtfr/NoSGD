@@ -5,7 +5,7 @@ package org.garagescience.deeplearning.nosgd.bca
 class ConstrainedGerminalCentre(override val d: Double,
                                 private val MAX_ABSOLUTE_WEIGHT_VALUE: Double = 1.0,
                                 override val poolSize: Int = 20)
-  extends GerminalCentre(d, poolSize) with IntegralGerminalCentre[Double, Double] {
+  extends GerminalCentre(d, poolSize) with IntegralGerminalCentre[Array, Double, Double] {
 
   import Double2BitStringConvert._
 

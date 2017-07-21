@@ -6,7 +6,7 @@ import scala.collection.immutable.{Seq => TSeq}
 
 class GerminalCentre(protected val d: Double,
                      protected val poolSize: Int = 20)
-  extends Hypermutate with IntegralGerminalCentre[Double, Double] {
+  extends Hypermutate with IntegralGerminalCentre[Array, Double, Double] {
 
   import Double2BitStringConvert._
 

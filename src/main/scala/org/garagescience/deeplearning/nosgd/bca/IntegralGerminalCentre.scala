@@ -2,12 +2,12 @@ package org.garagescience.deeplearning.nosgd.bca
 
 import scala.language.higherKinds
 
-trait IntegralGerminalCentre[A, B] {
+trait IntegralGerminalCentre[S[_], A, B] {
 
-  def germinate: Array[A]
+  def germinate: S[A]
 
   def update(f: A => B)
 
-  def compareAndReplace(l1: Array[A], l2: Array[A], f: A => B): Array[B]
+  def compareAndReplace(l1: S[A], l2: S[A], f: A => B): S[B]
 
 }
