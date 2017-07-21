@@ -10,7 +10,6 @@ class ConstrainedGerminalCentre(override val d: Double,
   import Double2BitStringConvert._
 
 
-
   // this hypermutates our clonal pool & returns it
   /**
     * germinate hypermutates the clonal pool
