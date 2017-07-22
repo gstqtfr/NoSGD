@@ -140,6 +140,17 @@ class FixedBitVector(protected val data: ListBuffer[BinaryNumber])
     index
   }
 
+
+  /** The element at given index.
+    *
+    *  Indices start at `0`; `xs.apply(0)` is the first element of array `xs`.
+    *  Note the indexing syntax `xs(i)` is a shorthand for `xs.apply(i)`.
+    *
+    *  @param    index   the index
+    *  @return       the element at the given index
+    *  @throws       ArrayIndexOutOfBoundsException if `index < 0` or `length <= index`
+    */
+
   def apply(index: Int): BinaryNumber = {
     val idx = checkRangeConvert(index)
     data(index)
