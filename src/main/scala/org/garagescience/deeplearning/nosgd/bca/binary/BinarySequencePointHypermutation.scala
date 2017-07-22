@@ -3,7 +3,8 @@ package org.garagescience.deeplearning.nosgd.bca.binary
 import scala.language.higherKinds
 import scala.language.implicitConversions
 import scala.reflect.ClassTag
-import org.garagescience.deeplearning.nosgd.linalg.BinaryNumber
+import org.garagescience.deeplearning.nosgd.linalg.{BinaryNumber, FixedBitVector}
+
 import scala.util.Random
 
 // so we assume that all the conversion to a sequence of BinaryNumber has been
@@ -15,16 +16,15 @@ import scala.util.Random
 // FIXME: NOT a sequence, we want the BinaryNumber mutator
 
 // TODO: do we want to extend any traits here?
-class BinarySequencePointHypermutation(bn: BinaryNumber,
+class BinarySequencePointHypermutation(fbv: FixedBitVector,
                                        // TODO: what about sign bits?
-                                       val mantissa: Int = 52,
                                        val poolSize: Int = 20,
                                        val maxHotSpots: Int = 10) {
 
   // TODO: this class needs to build the clonal pool itself
   // FIXME: DONE!!!
-  var clones: IndexedSeq[BinaryNumber] = {
-    for {i <- 0 until poolSize} yield bn
+  var clones: IndexedSeq[FixedBitVector] = {
+    for {i <- 0 until poolSize} yield fbv
   }
 
   private val rand = Random
@@ -37,7 +37,7 @@ class BinarySequencePointHypermutation(bn: BinaryNumber,
     // randomly select the number of hot spots we'll
     // generate for this clone
     val hs: Int = rand.nextInt(maxHotSpots) + 1
-    val hotSpots: Seq[Int] = (0 until hs).map { idx => rand.nextInt(mantissa) }
+    val hotSpots: Seq[Int] = (0 until hs).map { idx => rand.nextInt(fbv.mantissa) }
     hotSpots
   }
 
@@ -54,7 +54,7 @@ class BinarySequencePointHypermutation(bn: BinaryNumber,
 
 
   // we pass germinate a clone, & it performs hypermutation on it
-  def hypermutate(bn: BinaryNumber) = {
+  def hypermutate(clone: FixedBitVector) = {
     val _hotspots = getHotspots
 
   }
