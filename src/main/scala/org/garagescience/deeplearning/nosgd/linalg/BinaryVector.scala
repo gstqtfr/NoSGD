@@ -35,24 +35,6 @@ import scala.reflect.ClassTag
 import scala.language.higherKinds
 import scala.collection.mutable.ListBuffer
 
-// more usage:
-
-/*
-Array(1,0,0,1,1).map { elem =>
-    val b: BinaryNumber = elem
-    b
-}
-// Array[BinaryNumber] = Array(One$@710afd47, Zero$@64420e34, Zero$@64420e34, One$@710afd47, One$@710afd47)
- */
-
-// from an array of chars, seq of longs
-
-/*
-
-Array('1','0','0','1','1').map { elem => val b: BinaryNumber = elem; b }
-Seq(1L, 0L, 0L, 1L, 1L).map { elem => val b: BinaryNumber = elem; b }
- */
-
 sealed trait BinaryNumber
 
 final object Zero extends BinaryNumber
@@ -88,30 +70,6 @@ object BinaryNumber {
 }
 
 
-// FIXME: the problem below is that we have to construct the list (or whatever)
-// FIXME: on the R.H.S., can't go from a pre-existing list ...
-// usage: val x: List[BinaryNumber] = List(1, 0, 1)
-// => x: List[BinaryNumber] = List(One$@3c3a0032, Zero$@54e02f6a, Zero$@54e02f6a)
-// val x: scala.collection.immutable.Vector[BinaryNumber] = scala.collection.immutable.Vector(0,1,1,1,0,0,1,0)
-// val x: Seq[BinaryNumber] = Seq(0,1,1,1,0,0,1,0)
-// works a treat - nifty ...
-
-/*
-object BinarySequence {
-
-  import scala.collection.generic.CanBuildFrom
-
-  implicit def toBinaryNumber[A: ClassTag, C[A] <: Traversable[A]](as: C[A])
-                                                                  (implicit cbf: CanBuildFrom[C[A],
-                                                                    A,
-                                                                    C[A]]): C[A] = {
-
-    as.toArray.to[C]
-  }
-}
-*/
-
-
 trait _FixedBitVector {
 
   // this fixed exponent keeps everything in a relatively small range
@@ -136,8 +94,8 @@ trait _FixedBitVector {
 class FixedBitVector(_data: ListBuffer[BinaryNumber])
   extends _FixedBitVector {
 
-  private val data = checkAndModifyLength(_data).reverse
-
+  // TODO: we need modify the exponent here
+  val data: ListBuffer[BinaryNumber] = checkAndModifyLength(_data).reverse
 
   // this deals with the problem that BigInteger.toString will return a +ve
   // number with the leading zeroes stripped; which is useless for our purposes
@@ -206,15 +164,7 @@ class FixedBitVector(_data: ListBuffer[BinaryNumber])
 
 
 // TODO: implicit classes? stick in an object?
-// TODO: test *THE* *FUCK* out of this!!!
-
-// TODO: yeah, doesn't work very well ... ah, well ...
-// FIXME: when i have everything else behaving itself, FIX THIS!!!
-
 // FIXME: in the meantime, let's use explicits ...
-
-// val tmp=java.lang.Long.toBinaryString(java.lang.Double.doubleToRawLongBits(d))
-// val lbn1: List[BinaryNumber] = new BinaryVectorFromChar(tmp).data
 
 object FixedBitVector {
 
@@ -249,9 +199,31 @@ object FixedBitVector {
 
 }
 
-/*
+// FIXME: the problem below is that we have to construct the list (or whatever)
+// FIXME: on the R.H.S., can't go from a pre-existing list ...
+// usage: val x: List[BinaryNumber] = List(1, 0, 1)
+// => x: List[BinaryNumber] = List(One$@3c3a0032, Zero$@54e02f6a, Zero$@54e02f6a)
+// val x: scala.collection.immutable.Vector[BinaryNumber] = scala.collection.immutable.Vector(0,1,1,1,0,0,1,0)
+// val x: Seq[BinaryNumber] = Seq(0,1,1,1,0,0,1,0)
+// works a treat - nifty ...
 
-// TODO: bollox. can;t get the fucker working ...
+/*
+object BinarySequence {
+
+  import scala.collection.generic.CanBuildFrom
+
+  implicit def toBinaryNumber[A: ClassTag, C[A] <: Traversable[A]](as: C[A])
+                                                                  (implicit cbf: CanBuildFrom[C[A],
+                                                                    A,
+                                                                    C[A]]): C[A] = {
+
+    as.toArray.to[C]
+  }
+}
+*/
+
+
+/*
 
 val xs: Seq[BinaryNumber] = Seq(0,1,1,1,0,0,1,0)
 
