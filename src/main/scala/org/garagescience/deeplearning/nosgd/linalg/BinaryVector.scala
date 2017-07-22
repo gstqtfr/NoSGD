@@ -93,36 +93,20 @@ object BinaryNumber {
 // val x: Seq[BinaryNumber] = Seq(0,1,1,1,0,0,1,0)
 // works a treat - nifty ...
 
+/*
 object BinarySequence {
 
   import scala.collection.generic.CanBuildFrom
 
   implicit def toBinaryNumber[A: ClassTag, C[A] <: Traversable[A]](as: C[A])
-                                                                  (implicit cbf: CanBuildFrom[C[A], A, C[A]]): C[A] = {
+                                                                  (implicit cbf: CanBuildFrom[C[A],
+                                                                    A,
+                                                                    C[A]]): C[A] = {
 
     as.toArray.to[C]
   }
 }
-
-
-
-  /*
-
-  def apply(index: Int): A = {
-    val idx = checkRangeConvert(index)
-    //println("get elem: "+index + "/"+idx + "(focus:" +focus+" xor:"+(idx^focus)+" depth:"+depth+")")
-    getElem(idx, idx ^ focus)
-  }
-
-  private def checkRangeConvert(index: Int) = {
-    val idx = index + startIndex
-    if (0 <= index && idx < endIndex)
-      idx
-    else
-      throw new IndexOutOfBoundsException(index.toString)
-  }
-
-   */
+*/
 
 
 trait _FixedBitVector {
@@ -137,9 +121,7 @@ trait _FixedBitVector {
   // the bits we can actually update, the mantissa & the sign bit
   final val length = 52
 
-
 }
-
 
 
 
@@ -161,7 +143,14 @@ class FixedBitVector(protected val data: List[BinaryNumber]) extends _FixedBitVe
 
 
 // TODO: implicit classes? stick in an object?
-// TODO: test THE FUCK out of this!!!
+// TODO: test *THE* *FUCK* out of this!!!
+
+// TODO: yeah, doesn't work very well ... ah, well ...
+// FIXME: when i have everything else behaving itself, FIX THIS!!!
+
+
+// val tmp=java.lang.Long.toBinaryString(java.lang.Double.doubleToRawLongBits(d))
+// val lbn1: List[BinaryNumber] = new BinaryVectorFromChar(tmp).data
 
 object FixedBitVector {
 
