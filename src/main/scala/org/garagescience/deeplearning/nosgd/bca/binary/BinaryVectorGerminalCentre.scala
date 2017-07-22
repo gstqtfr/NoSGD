@@ -1,29 +1,40 @@
 package org.garagescience.deeplearning.nosgd.bca.binary
 
-import org.garagescience.deeplearning.nosgd.bca.{Hypermutate, SequenceSingleArgGerminalCentre}
-
 import scala.language.higherKinds
 import scala.language.implicitConversions
 import scala.reflect.ClassTag
-import org.garagescience.deeplearning.nosgd.linalg._
+import scala.collection.mutable.ListBuffer
+import org.garagescience.deeplearning.nosgd.linalg.{BinaryNumber, FixedBitVector, One, Zero}
 
-// TODO: higher-kinded collection here? Aray[T] => S[T]?
+import scala.collection.immutable.{IndexedSeq, Seq}
 
-// TODO: the clones need to move to e.g. BinarySequencePointHypermutation
+// TODO: get it stamped out in plain, non-generic code 1st
+// TODO: tidy up (asvtract to trait, higher kinds) later
 
-class BinaryVectorGerminalCentre[T: ClassTag, U: ClassTag](val m: Array[T],
-                                    override val poolSize: Int = 20)
-  // TODO: not sure if it's approp. to use these traits ...
-  extends Hypermutate with SequenceSingleArgGerminalCentre[Array, T, U] {
 
-  // TODO: move to BinarySequencePointHypermutation
-  var clones: Array[Array[T]] = {
-    for {i <- 0 until poolSize} yield m
-  }.toArray
+class BinaryVectorGerminalCentre(xs: Seq[Double]) {
 
-  def germinate: Array[Array[T]] = ???
-  def getClonePoolFitness(f: U => T): Array[T] = ???
-  def getFittest(f: U => T): Array[T] = ???
-  def update(xs1: Array[T], xs2: Array[T],xxs: Array[Array[T]]): Array[Array[T]] = ???
+  import FixedBitVector._
+
+  private final def popSize = xs.length
+
+  private def conv2CharList(d: Double): List[Char] =
+    java.lang.Long.toBinaryString(java.lang.Double.doubleToRawLongBits(d)).toList
+
+
+  private def createHypermutator(d: Double): BinarySequencePointHypermutation = {
+    val lc: List[Char] = conv2CharList(d)
+    val lbn: ListBuffer[BinaryNumber] = fromCharList(lc)
+    new BinarySequencePointHypermutation(new FixedBitVector(lbn))
+  }
+
+  // create our population of binary number germinal centres
+  private val gcs: Seq[BinarySequencePointHypermutation] = xs.map { d => createHypermutator(d) }
+
+
+
+
+
+
 
 }

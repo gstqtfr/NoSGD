@@ -144,7 +144,7 @@ class FixedBitVector(_data: ListBuffer[BinaryNumber])
   private def checkAndModifyLength(l: ListBuffer[BinaryNumber]): ListBuffer[BinaryNumber] = l.length match {
     case `fixedLength` => _data
     case `positiveLength` =>
-      _data.prepend('0','0')
+      _data.prepend('0', '0')
       _data
   }
 
@@ -211,57 +211,40 @@ class FixedBitVector(_data: ListBuffer[BinaryNumber])
 // TODO: yeah, doesn't work very well ... ah, well ...
 // FIXME: when i have everything else behaving itself, FIX THIS!!!
 
+// FIXME: in the meantime, let's use explicits ...
 
 // val tmp=java.lang.Long.toBinaryString(java.lang.Double.doubleToRawLongBits(d))
 // val lbn1: List[BinaryNumber] = new BinaryVectorFromChar(tmp).data
 
 object FixedBitVector {
 
-  // usage: val bv = new BinaryVector(List(0,0,1,0,1,1,1,0))
-  implicit class BinaryVectorFromInt(val _data: List[Int]) {
-
-    def data: ListBuffer[BinaryNumber] = _data.map { elem =>
-      val b: BinaryNumber = elem
-      b
-    }.to[ListBuffer]
-  }
-
-  // usage:
-  // val d = - scala.util.Random.nextDouble
-  // val xc = java.lang.Long.toBinaryString(java.lang.Double.doubleToRawLongBits(d)).toList
-  // val bvfc = new BinaryVectorFromChar(xc)
-  // val xs = bvfc.data
-
-  implicit class BinaryVectorFromChar(val _data: List[Char]) {
-
-    def data: ListBuffer[BinaryNumber] = _data.map { elem =>
-      val b: BinaryNumber = elem
-      b
-    }.to[ListBuffer]
-  }
+  def fromIntList(_data: List[Int]): ListBuffer[BinaryNumber] = _data.map { elem =>
+    val b: BinaryNumber = elem
+    b
+  }.to[ListBuffer]
 
 
-  implicit class CharSeqFromBinaryVector(xs: List[BinaryNumber]) {
+  def fromCharList(_data: List[Char]): ListBuffer[BinaryNumber] = _data.map { elem =>
+    val b: BinaryNumber = elem
+    b
+  }.to[ListBuffer]
 
-    def data: List[Char] = xs.map { elem: BinaryNumber =>
-      elem match {
-        case Zero => '0'
-        case One => '1'
-        case _ => '0'
-      }
+
+  def toCharList(xs: List[BinaryNumber]): List[Char] = xs.map { elem: BinaryNumber =>
+    elem match {
+      case Zero => '0'
+      case One => '1'
+      case _ => '0'
     }
   }
 
-  implicit class IntSeqFromBinaryVector(xs: List[BinaryNumber]) {
 
-    def data: List[Int] = xs.map { elem: BinaryNumber =>
-      elem match {
-        case Zero => 0
-        case One => 1
-        case _ => 0
-      }
+  def toIntList(xs: List[BinaryNumber]): List[Int] = xs.map { elem: BinaryNumber =>
+    elem match {
+      case Zero => 0
+      case One => 1
+      case _ => 0
     }
-
   }
 
 }
