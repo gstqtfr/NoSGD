@@ -31,6 +31,7 @@ package org.garagescience.deeplearning.nosgd.linalg
 import scala.language.implicitConversions
 import scala.reflect.ClassTag
 import scala.language.higherKinds
+import scala.collection.mutable.ListBuffer
 
 // more usage:
 
@@ -109,6 +110,8 @@ object BinarySequence {
 */
 
 
+
+
 trait _FixedBitVector {
 
   // this fixed exponent keeps everything in a relatively small range
@@ -125,10 +128,13 @@ trait _FixedBitVector {
 
 
 
-class FixedBitVector(protected val data: List[BinaryNumber]) extends _FixedBitVector {
+// TODO: need to be able to assign
+
+class FixedBitVector(protected val data: ListBuffer[BinaryNumber])
+  extends _FixedBitVector {
 
   private def checkRangeConvert(index: Int) = {
-    if ((index < 0) || (index > length-1)) {
+    if ((index < 0) || (index >= length)) {
       throw new IndexOutOfBoundsException(s"index $index out of bounds")
     }
     index
@@ -137,6 +143,20 @@ class FixedBitVector(protected val data: List[BinaryNumber]) extends _FixedBitVe
   def apply(index: Int): BinaryNumber = {
     val idx = checkRangeConvert(index)
     data(index)
+  }
+
+  /** Update the element at given index.
+    *
+    *  Indices start at `0`; `xs.update(i, x)` replaces the i^th^ element in the array.
+    *  Note the syntax `xs(i) = x` is a shorthand for `xs.update(i, x)`.
+    *
+    *  @param    index   the index
+    *  @param    x       the value to be written at index `i`
+    *  @throws           ArrayIndexOutOfBoundsException if `index < 0` or `index >= length`
+    */
+  def update(index: Int, x: BinaryNumber): Unit = {
+    val idx = checkRangeConvert(index)
+    data(index) = x
   }
 
 }
@@ -157,10 +177,10 @@ object FixedBitVector {
   // usage: val bv = new BinaryVector(List(0,0,1,0,1,1,1,0))
   implicit class BinaryVectorFromInt(val _data: List[Int]) {
 
-    def data: List[BinaryNumber] = _data.map { elem =>
+    def data: ListBuffer[BinaryNumber] = _data.map { elem =>
       val b: BinaryNumber = elem
       b
-    }
+    }.to[ListBuffer]
   }
 
   // usage:
@@ -171,10 +191,10 @@ object FixedBitVector {
 
   implicit class BinaryVectorFromChar(val _data: List[Char]) {
 
-    def data: List[BinaryNumber] = _data.map { elem =>
+    def data: ListBuffer[BinaryNumber] = _data.map { elem =>
       val b: BinaryNumber = elem
       b
-    }
+    }.to[ListBuffer]
   }
 
 
@@ -220,12 +240,4 @@ val thingfish = xs.map(e=>e)(seqToBinaryNumberSeqBuilder)
 //val bitsAgain = aintBits.map( _.toInt )( setToBitSetBuilder )
 
  */
-
-
-
-
-
-
-
-
 
