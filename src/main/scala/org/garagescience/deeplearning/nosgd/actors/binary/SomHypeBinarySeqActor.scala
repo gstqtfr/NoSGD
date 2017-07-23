@@ -1,24 +1,27 @@
-package org.garagescience.deeplearning.nosgd.actors
+package org.garagescience.deeplearning.nosgd.actors.binary
 
 import akka.actor.{Actor, Props}
+import org.garagescience.deeplearning.nosgd.actors._
 import org.garagescience.deeplearning.nosgd.mlp._
 import org.garagescience.deeplearning.nosgd.mlp.NeuralNetwork._
+
+import scala.collection.immutable.{IndexedSeq, Seq => TSeq}
 import scala.language.postfixOps
 
-class SomHypeNetActor(numInputs: Int, numOutputs: Int, verbose: Boolean = false)
+class SomHypeBinarySeqActor(numInputs: Int,
+                            numOutputs: Int,
+                            verbose: Boolean = false)
   extends ThinController(0.001) with Actor {
 
   // here's our own, personal, neural network; nobody else's. it OURS ...
   val network = new SomHypeNeuralNetwork(
-    Layer(numInputs, 100, Logistic):+Layer(numOutputs, SoftMax),
+    Layer(numInputs, 100, Logistic) :+ Layer(numOutputs, SoftMax),
     objective = CrossEntropyError)
 
   // these are the initial weights, which we'll use to seed the germinal centre
-  val weights: Array[Double] = weights2Sequence(network).toArray
+  val weights: TSeq[Double] = weights2Sequence(network)
 
-  val interface = new SomHypeInterface(network, weights)
-
-  // constrained GC here ...
+  val interface = new SomHypeBinaryInterface(network, weights)
 
   def receive = {
 
@@ -27,14 +30,9 @@ class SomHypeNetActor(numInputs: Int, numOutputs: Int, verbose: Boolean = false)
       // got through the batch of data
       val errors = interface.update(iteration, data)
       // respond to the controller actor
-      sender ! TheseErrorsGC(iteration, errors)
+      sender ! TheseErrorsGC(iteration, errors.toArray)
 
 
-      // FIXME: the methods below are STUB implementations. we may or
-      // FIXME: need them ...
-
-
-    // FIXME: STUB: this is a stub implementation, leave for now ...
     case GetErrorsGC =>
       if (verbose) log.info(s"${self.path} received ErrorsGC")
       // TODO: write this code!
@@ -42,6 +40,7 @@ class SomHypeNetActor(numInputs: Int, numOutputs: Int, verbose: Boolean = false)
       val errors = Array(0.0)
       if (verbose) log.info(s"${self.path} errors: $errors")
       sender ! ErrorsGC(errors)
+
 
 
     // FIXME: STUB: this is a stub implementation, leave for now ...
@@ -53,11 +52,9 @@ class SomHypeNetActor(numInputs: Int, numOutputs: Int, verbose: Boolean = false)
       sender ! MinimumGC(errors)
 
 
-
     case FinalWhistle =>
       log.info(s"${self.path} received FinalWhistle, shutting down")
       context.stop(self)
-
 
 
     case m =>
@@ -66,11 +63,12 @@ class SomHypeNetActor(numInputs: Int, numOutputs: Int, verbose: Boolean = false)
 
 }
 
-object SomHypeNetActor {
+
+object SomHypeBinarySeqActor {
 
   // best practise is to put the props close to where the
   // actor itself is init'd
   def props(numInputs: Int, numOutputs: Int): Props =
-    Props(new SomHypeNetActor(numInputs, numOutputs))
+  Props(new SomHypeBinarySeqActor(numInputs, numOutputs))
 
 }

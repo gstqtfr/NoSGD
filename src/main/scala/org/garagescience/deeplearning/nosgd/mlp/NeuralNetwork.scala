@@ -38,5 +38,5 @@ object NeuralNetwork {
   def weights2Sequence(network: NeuralNetwork) = network.
     layers.
     map(layer => layer.weights).
-    map(weights => weights.toArray).flatten.toArray
+    map(weights => weights.toArray).flatten
 }

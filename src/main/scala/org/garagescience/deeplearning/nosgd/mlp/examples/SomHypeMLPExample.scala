@@ -25,7 +25,7 @@ object SomHypeMLPExample {
       objective = CrossEntropyError)
 
     // get the weights as a sequence, so we can initialise the hypermutator!
-    val weights: Array[Double] = weights2Sequence(network)
+    val weights: Array[Double] = weights2Sequence(network).toArray
 
     val hypermutate = new ConstrainedSequenceHypermutation(weights)
 
