@@ -1,73 +1,10 @@
 package org.garagescience.deeplearning.nosgd.linalg
 
-// this is how we've been performing double-to-bits conversions:
-
-/*
-
-// TODO: to replace some of these:
-
-  def toBinaryString(d: Double): String =
-    java.lang.Long.toBinaryString(java.lang.Double.doubleToRawLongBits(d))
-
-  def fromBinaryString(s: String): Double =
-    java.lang.Double.longBitsToDouble(new BigInteger(s, 2).longValue())
-
- */
-
-
-// FIXME: & ANOTHER!!!
-
-// java.lang.Long.toBinaryString(java.lang.Double.doubleToRawLongBits(d)).toList
-
-// FIXME: EVEN BETTER!!!
-
-// java.lang.Long.toBinaryString(java.lang.Double.doubleToRawLongBits(d)).toList.map { c => val n: BinaryNumber = c; n }
-
-// FIXME: okay, that's cool. we *could* try pimping List, Seq, Array, Vector with these, have a toBinaryNumber
-// FIXME: that might be a REALLY nice way of sorthing this out ...
-
-// TODO: let's have a typeclass for the suckers ...
-
 import java.math.BigInteger
-
 import scala.language.implicitConversions
 import scala.reflect.ClassTag
 import scala.language.higherKinds
 import scala.collection.mutable.ListBuffer
-
-sealed trait BinaryNumber
-
-final object Zero extends BinaryNumber
-
-final object One extends BinaryNumber
-
-// companion to build binary numbers
-object BinaryNumber {
-
-  // here's the question: do we wrap in an Option? or do
-  // we throw an exception (yuk!)?
-  // N.B. the default case is *very* cheeky
-  implicit def int2Binary(n: Int): BinaryNumber = n match {
-    case 0 => Zero
-    case 1 => One
-    case _ => Zero
-  }
-
-  implicit def long2Binary(l: Long): BinaryNumber = l match {
-    case 0 => Zero
-    case 1 => One
-    case _ => Zero
-  }
-
-  implicit def char2Binary(c: Char): BinaryNumber = c match {
-
-    case '0' => Zero
-    case '1' => One
-    case _ => Zero
-  }
-
-  // TODO: string, double implicits ...
-}
 
 
 trait _FixedBitVector {
@@ -160,6 +97,19 @@ class FixedBitVector(_data: ListBuffer[BinaryNumber])
   // TODO: an implicit here would be nice ...
   def toDouble(): Double = java.lang.Double.longBitsToDouble(new BigInteger(toString, 2).longValue())
 
+  // provide a new copy of data for copying/cloning this object
+  def copy: FixedBitVector = {
+
+    val lb = new ListBuffer[BinaryNumber]()
+
+    (0 until fixedLength).map { i =>
+      // do we also need to copy BinaryNumber?
+      lb += data(i)
+    }
+
+    new FixedBitVector(lb)
+  }
+
 }
 
 
@@ -198,44 +148,3 @@ object FixedBitVector {
   }
 
 }
-
-// FIXME: the problem below is that we have to construct the list (or whatever)
-// FIXME: on the R.H.S., can't go from a pre-existing list ...
-// usage: val x: List[BinaryNumber] = List(1, 0, 1)
-// => x: List[BinaryNumber] = List(One$@3c3a0032, Zero$@54e02f6a, Zero$@54e02f6a)
-// val x: scala.collection.immutable.Vector[BinaryNumber] = scala.collection.immutable.Vector(0,1,1,1,0,0,1,0)
-// val x: Seq[BinaryNumber] = Seq(0,1,1,1,0,0,1,0)
-// works a treat - nifty ...
-
-/*
-object BinarySequence {
-
-  import scala.collection.generic.CanBuildFrom
-
-  implicit def toBinaryNumber[A: ClassTag, C[A] <: Traversable[A]](as: C[A])
-                                                                  (implicit cbf: CanBuildFrom[C[A],
-                                                                    A,
-                                                                    C[A]]): C[A] = {
-
-    as.toArray.to[C]
-  }
-}
-*/
-
-
-/*
-
-val xs: Seq[BinaryNumber] = Seq(0,1,1,1,0,0,1,0)
-
-import scala.collection.generic.CanBuildFrom
-
-val seqToBinaryNumberSeqBuilder = new CanBuildFrom[Seq[Int], BinaryNumber, Seq[BinaryNumber]] {
-    def apply(from: Seq[Int]) = this.apply(); def apply() = Seq.newBuilder
-}
-
-val thingfish = xs.map(e=>e)(seqToBinaryNumberSeqBuilder)
-
-//val bitsAgain = aintBits.map( _.toInt )( setToBitSetBuilder )
-
- */
-
