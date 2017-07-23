@@ -10,8 +10,10 @@ import scala.language.postfixOps
 
 class SomHypeBinarySeqActor(numInputs: Int,
                             numOutputs: Int,
-                            verbose: Boolean = false)
+                            verbose: Boolean = true)
   extends ThinController(0.001) with Actor {
+
+  if (verbose) println(s"${self.path}: INITIALISING SomHypeBinarySeqActor")
 
   // here's our own, personal, neural network; nobody else's. it OURS ...
   val network = new SomHypeNeuralNetwork(
@@ -32,7 +34,7 @@ class SomHypeBinarySeqActor(numInputs: Int,
       // respond to the controller actor
       sender ! TheseErrorsGC(iteration, errors.toArray)
 
-
+/*
     case GetErrorsGC =>
       if (verbose) log.info(s"${self.path} received ErrorsGC")
       // TODO: write this code!
@@ -40,9 +42,9 @@ class SomHypeBinarySeqActor(numInputs: Int,
       val errors = Array(0.0)
       if (verbose) log.info(s"${self.path} errors: $errors")
       sender ! ErrorsGC(errors)
+*/
 
-
-
+/*
     // FIXME: STUB: this is a stub implementation, leave for now ...
     case GetMinimumGC =>
       log.info(s"${self.path} received GetMinimumGC")
@@ -50,7 +52,7 @@ class SomHypeBinarySeqActor(numInputs: Int,
       // do that ...
       val errors = Array(0.0)
       sender ! MinimumGC(errors)
-
+*/
 
     case FinalWhistle =>
       log.info(s"${self.path} received FinalWhistle, shutting down")
@@ -68,7 +70,13 @@ object SomHypeBinarySeqActor {
 
   // best practise is to put the props close to where the
   // actor itself is init'd
-  def props(numInputs: Int, numOutputs: Int): Props =
-  Props(new SomHypeBinarySeqActor(numInputs, numOutputs))
+  def props(numInputs: Int,
+            numOutputs: Int): Props =
+  Props(new SomHypeBinarySeqActor(numInputs, numOutputs, true))
+
+  def props(numInputs: Int,
+            numOutputs: Int,
+            verbose: Boolean): Props =
+    Props(new SomHypeBinarySeqActor(numInputs, numOutputs, verbose))
 
 }

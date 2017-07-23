@@ -35,7 +35,7 @@ class SomHypeBinaryInterface(network: SomHypeNeuralNetwork,
   private def cloneTrial(clone: TSeq[Double],
                          network: SomHypeNeuralNetwork,
                          trainingSet: DataSet): Double = {
-    //println("SomHypeTrainer: in cloneTrial")
+    println("SomHypeTrainer: in cloneTrial")
     applySequence2Weights(clone, network.layers)
     // TODO: have a GOOD LOOK at whether or not we should be using this below ...
     //network.eval(trainingSet)
@@ -44,7 +44,7 @@ class SomHypeBinaryInterface(network: SomHypeNeuralNetwork,
   }
 
   private def getFittest(errors: TSeq[Double]): Int = {
-    //println("SomHypeTrainer: in getFittest")
+    println("SomHypeTrainer: in getFittest")
     import scala.collection.immutable.ListMap
     val m1 = (errors.indices zip errors).toMap
     // FIXME: this gives you the scores by lowest:
@@ -64,7 +64,7 @@ class SomHypeBinaryInterface(network: SomHypeNeuralNetwork,
       //val currentFitness = network.eval(trainingSet)
       // TODO: network.errorGradients modification
       val currentFitness: DoubleMatrix = network.errorGradients(trainingSet)
-      //  println(s"$iteration $currentFitness")
+      println(s"$iteration $currentFitness")
 
       // produce the next generation of hypermutated clones
       val newClonalPool: TSeq[TSeq[Double]] = hypermutate.iterate

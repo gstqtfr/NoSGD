@@ -15,9 +15,9 @@ class SomHypeControllerActor(trainset: DataSet,
                              _gcl: List[ActorRef],
                              epsilon: Double = 0.01,
                              numIterations: Int = 300,
-                             miniBatchSize: Int = 50,
+                             miniBatchSize: Int = 10,
                              evalIterations: Int = 10,
-                             verbose: Boolean = false
+                             verbose: Boolean = true
                             ) extends ThinController(epsilon) {
 
 
