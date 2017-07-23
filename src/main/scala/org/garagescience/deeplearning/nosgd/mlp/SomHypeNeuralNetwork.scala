@@ -1,7 +1,5 @@
 package org.garagescience.deeplearning.nosgd.mlp
 
-// TODO: let's copy AS MUCH AS WE CAN across & adapt it
-
 import org.garagescience.deeplearning.nosgd.mlp.data.DataSet
 import org.jblas.DoubleMatrix
 

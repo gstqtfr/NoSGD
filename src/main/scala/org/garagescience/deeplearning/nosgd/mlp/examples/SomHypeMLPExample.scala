@@ -11,15 +11,12 @@ object SomHypeMLPExample {
   val trainingSetDir = "data/train"
   val testSetDir = "data/test"
 
-
   def main(args: Array[String]): Unit = {
 
     val trainSet: ImageTileDataSet = ImageTileDataSet(
       trainingSetDir,
       numClasses = 10,
       imageDimension = 28)
-
-
 
     println("Training Examples: " + trainSet.numExamples)
 

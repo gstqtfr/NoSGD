@@ -21,22 +21,14 @@ class BinarySequencePointHypermutation(fbv: FixedBitVector,
                                        val poolSize: Int = 20,
                                        val maxHotSpots: Int = 10) {
 
-  // build the clonal pool
-  // FIXME: we want a COPY!!!
-
-  // a.clone.map(_.clone)
-
-  // FIXME: this needs to be done at the level of the FBV
-
   var clones: IndexedSeq[FixedBitVector] =
     // need a deep copy for this
     (0 until poolSize).map { idx => fbv.copy }
 
 
-
   private val rand = Random
 
-  // TODO: could make this a one-liner ... (yikes!)
+  // could make this a one-liner ... (yikes!)
 
   private def getHotspots: TSeq[Int] = {
     // randomly select the number of hot spots we'll
@@ -59,15 +51,10 @@ class BinarySequencePointHypermutation(fbv: FixedBitVector,
   // we could one-liner this, too ... (?!?)
   // we pass germinate a clone, & it performs hypermutation on it
   def hypermutate(clone: FixedBitVector): FixedBitVector = {
-    println(s"hypermutate: B/4: $clone")
     val _hotspots = getHotspots
-    println(s"hypermutate: ${_hotspots}")
     (0 until _hotspots.length).map { idx =>
-      println(s"hypermutate: B/4: ${clone(idx)}")
       clone(idx) = hotspot
-      println(s"hypermutate: NOW: ${clone(idx)}")
     }
-    println(s"hypermutate: NOW: $clone")
     clone
   }
 

@@ -100,24 +100,6 @@ class SomHypeControllerActor(trainset: DataSet,
         sender ! getDataSpecificExample(it + 1)
       }
 
-    /*
-
-    case MinimumGC(errors) =>
-      log.info(s"${self.path} ${count} received MinimumGC")
-      log.info(s"${self.path} ${count} errors: ${errors}")
-      log.info(s"${self.path} ${count} error term: ${count} : ${getMinimum(errors)}")
-      log.info(s"${self.path} ${count} sending kill to $sender")
-      // TODO: get it off the actor ref list ...
-      gcl = gcl.filterNot(_ == sender)
-      sender ! FinalWhistle
-      if (gcl.length == 0) {
-        log.info(s"${self.path} ${count} committing suicide - goodbye cruel world ...")
-        context.stop(self)
-      }
-
-    */
-
-
   }
 
 }

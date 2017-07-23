@@ -5,9 +5,6 @@ import org.garagescience.deeplearning.nosgd.mlp._
 import org.garagescience.deeplearning.nosgd.mlp.NeuralNetwork._
 import scala.language.postfixOps
 
-// TODO: WE NEED A MORE SENSITIVE ERROR FUNCTION!
-
-
 class SomHypeNetActor(numInputs: Int, numOutputs: Int, verbose: Boolean = false)
   extends ThinController(0.001) with Actor {
 
