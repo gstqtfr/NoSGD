@@ -35,6 +35,7 @@ class SomHypeNetActor(numInputs: Int, numOutputs: Int, verbose: Boolean = false)
 
 
     // FIXME: STUB: this is a stub implementation, leave for now ...
+      /*
     case GetErrorsGC =>
       if (verbose) log.info(s"${self.path} received ErrorsGC")
       // TODO: write this code!
@@ -52,7 +53,7 @@ class SomHypeNetActor(numInputs: Int, numOutputs: Int, verbose: Boolean = false)
       val errors = Array(0.0)
       sender ! MinimumGC(errors)
 
-
+    */
 
     case FinalWhistle =>
       log.info(s"${self.path} received FinalWhistle, shutting down")

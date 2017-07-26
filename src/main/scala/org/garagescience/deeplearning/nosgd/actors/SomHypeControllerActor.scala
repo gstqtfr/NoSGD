@@ -4,22 +4,23 @@ import akka.actor.{Actor, ActorRef, Props}
 import org.garagescience.deeplearning.nosgd.mlp.data.DataSet
 import scala.language.postfixOps
 
-// TODO: WE NEED A MORE SENSITIVE ERROR FUNCTION!
+// TODO: WE NEED A MORE SENSITIVE ERROR FUNCTION! - maybe ...
 
-// TODO: test what happens if we > 1 of these!
-// TODO: *lots* of parallelism
+// TODO: this doesn't need to be altered for e.g. FixedPointHypermutation
+// TODO: it's sufficiently general
+// TODO: which is nifty ...
+
 
 class SomHypeControllerActor(trainset: DataSet,
                              // a supervisor actor would create its own, rather than
                              // have it passed
                              _gcl: List[ActorRef],
-                             epsilon: Double = 0.01,
-                             numIterations: Int = 300,
-                             miniBatchSize: Int = 10,
-                             evalIterations: Int = 10,
+                             epsilon: Double,
+                             numIterations: Int,
+                             miniBatchSize: Int,
+                             evalIterations: Int,
                              verbose: Boolean = true
                             ) extends ThinController(epsilon) {
-
 
   var gcl = _gcl
 
@@ -72,32 +73,27 @@ class SomHypeControllerActor(trainset: DataSet,
       // give our actors a batch of the data
       // TODO: need to investigate how big the batch should be
       sendToAll(ThisDataGC(0, getRandomSample(miniBatchSize)), gcl)
-
+      log.info(s"${self.path} sent ThisData to all")
 
 
     // if an actor has sent ErrorsGC, it means they've completed the data
+    // TODO: this case is rather too long, need to refactor, put in a sep. function...
     case TheseErrorsGC(it, errors) =>
-      if (verbose) {
-        log.info(s"${self.path} ${count} received TheseErrorsGC")
-        log.info(s"${self.path} ${count} errors: ${errors}")
-        log.info(s"${self.path} ${count} error term: ${count} : ${getMinimum(errors)}")
-      } else {
-        // log.info(s"$it ${getMinimum(errors)}")
-        println(s"$it ${getMean(errors)}")
+      
+      if (it < numIterations) {
+        sender ! getDataSpecificExample(it + 1)
       }
 
       if (it == numIterations) {
         // don't kill it yet - we need the fittest clone
         // after we get the fittest clone, then we kill it
+        log.info(s"${self.path} ${count} iterations ${it} == ${numIterations}...")
         gcl = gcl.filterNot(_ == sender)
         sender ! FinalWhistle
         if (gcl.length == 0) {
           log.info(s"${self.path} ${count} committing suicide - goodbye cruel world ...")
           context.stop(self)
         }
-      } else {
-        // send the next batch of data
-        sender ! getDataSpecificExample(it + 1)
       }
 
   }
