@@ -79,7 +79,7 @@ class SomHypeControllerActor(trainset: DataSet,
     // if an actor has sent ErrorsGC, it means they've completed the data
     // TODO: this case is rather too long, need to refactor, put in a sep. function...
     case TheseErrorsGC(it, errors) =>
-      
+
       if (it < numIterations) {
         sender ! getDataSpecificExample(it + 1)
       }
