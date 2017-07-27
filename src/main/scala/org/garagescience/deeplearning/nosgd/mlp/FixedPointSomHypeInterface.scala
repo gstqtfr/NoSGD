@@ -9,7 +9,7 @@ import org.jblas.DoubleMatrix
 // TODO: implement momentum & learning rate decay
 // TODO: (see https://stats.stackexchange.com/questions/70101/neural-networks-weight-change-momentum-and-weight-decay)
 
-// TODO: so, for momentum, we jsut add the previous weight change * a coefficient
+// TODO: so, for momentum, we just add the previous weight change * a coefficient
 
 /*
 this style of thing:
