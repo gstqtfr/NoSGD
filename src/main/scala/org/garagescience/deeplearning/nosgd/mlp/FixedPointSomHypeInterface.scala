@@ -6,6 +6,25 @@ import scala.collection.immutable.{Seq => TSeq}
 import org.garagescience.deeplearning.nosgd.mlp.data.DataSet
 import org.jblas.DoubleMatrix
 
+// TODO: implement momentum & learning rate decay
+// TODO: (see https://stats.stackexchange.com/questions/70101/neural-networks-weight-change-momentum-and-weight-decay)
+
+// TODO: so, for momentum, we jsut add the previous weight change * a coefficient
+
+/*
+this style of thing:
+Momentum αα is used to diminish the fluctuations in weight changes over consecutive iterations:
+
+Δωi(t+1)=−η∂E∂wi+αΔωi(t),
+Δωi(t+1)=−η∂E∂wi+αΔωi(t),
+where E(w) is the error function, w - the vector of weights, η - learning rate.
+
+// TODO: So why can't we do αΔωi(t) + α^2Δωi(t-1), for e.g.?
+ */
+
+// TODO: implement multiple-point mutation
+
+
 // TODO: the ONLY DIFFERENCE is type of hypermutate!!!
 class FixedPointSomHypeInterface(network: SomHypeNeuralNetwork,
                                  seed: TSeq[Double],
