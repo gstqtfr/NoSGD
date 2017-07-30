@@ -35,8 +35,13 @@ trait NeuralNetwork {
 
 object NeuralNetwork {
 
-  def weights2Sequence(network: NeuralNetwork) = network.
+  def weights2Sequence(network: NeuralNetwork): List[Double] = network.
     layers.
     map(layer => layer.weights).
     map(weights => weights.toArray).flatten
+
+  def weights2MatrixSequence(network: NeuralNetwork): List[DoubleMatrix] = network.
+    layers.
+    map(layer => layer.weights)
+
 }

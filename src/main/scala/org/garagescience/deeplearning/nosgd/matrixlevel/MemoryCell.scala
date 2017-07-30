@@ -1,16 +1,15 @@
-package org.garagescience.deeplearning.nosgd.bca
+package org.garagescience.deeplearning.nosgd.matrixlevel
 
-import scala.IndexedSeq
-import scala.collection.immutable.IndexedSeq
+import org.jblas.DoubleMatrix
+
 import scala.language.implicitConversions
 import scala.reflect.ClassTag
-import org.jblas.DoubleMatrix
 
 
 class MemoryCell(max: Int, alpha: Double, m: DoubleMatrix) {
 
-  import Shift._
   import Decay._
+  import Shift._
 
   var matrixArray: Array[DoubleMatrix] = (0 until max).map { idx => m }.toArray
 
@@ -18,7 +17,6 @@ class MemoryCell(max: Int, alpha: Double, m: DoubleMatrix) {
     matrixArray = decay(alpha, shift(m, matrixArray))
     matrixArray
   }
-
 
 }
 
@@ -65,7 +63,7 @@ object Decay {
 // TODO: method names?
 
 import scala.collection._
-import mutable.ListBuffer
+import scala.collection.mutable.ListBuffer
 
 // this works okay, prob. worth keeping around ...
 class FixedList[A](max: Int) extends Traversable[A] {
