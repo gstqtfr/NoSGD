@@ -11,7 +11,7 @@ import org.jblas.DoubleMatrix
 // the iteration, so frees up memory.
 
 // TODO: we're doing this from the top, clean room design
-class MatrixGerminalCentre(val m: DoubleMatrix, val poolSize: Int = 20) {
+class MatrixGerminalCentre(val m: DoubleMatrix) {
 
   protected val r = new scala.util.Random
 
