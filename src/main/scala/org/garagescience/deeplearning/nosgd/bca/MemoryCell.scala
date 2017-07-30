@@ -14,7 +14,7 @@ class MemoryCell(max: Int, alpha: Double, m: DoubleMatrix) {
 
   var matrixArray: Array[DoubleMatrix] = (0 until max).map { idx => m }.toArray
 
-  def prepend(m: DoubleMatrix): Array[DoubleMatrix] = {
+  def pipeline(m: DoubleMatrix): Array[DoubleMatrix] = {
     matrixArray = decay(alpha, shift(m, matrixArray))
     matrixArray
   }
@@ -38,8 +38,6 @@ object Decay {
 
   def _decay(coeff: Double, i: Double, d: Double) = Math.pow(coeff, i) * d
 
-  def _decay(coeff: Double, i: Double, d: DoubleMatrix) = d.mmul(Math.pow(coeff, i))
-
   // straighforward array implementation
   def decay(coeff: Double, array: Array[Double]): Array[Double] = {
 
@@ -47,6 +45,8 @@ object Decay {
       _decay(coeff, idx, array(idx))
     }.toArray
   }
+
+  def _decay(coeff: Double, i: Double, d: DoubleMatrix) = d.mmul(Math.pow(coeff, i))
 
   // & another! this one works on BLAS matrices ...
   def decay(coeff: Double, mArray: Array[DoubleMatrix]): Array[DoubleMatrix] = {
