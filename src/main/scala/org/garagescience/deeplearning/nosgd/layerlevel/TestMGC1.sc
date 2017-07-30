@@ -1,4 +1,4 @@
-import org.garagescience.deeplearning.nosgd.matrixlevel._
+import org.garagescience.deeplearning.nosgd.layerlevel._
 import org.jblas.DoubleMatrix
 
 val m = DoubleMatrix.randn(2,2)

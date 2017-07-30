@@ -1,4 +1,4 @@
-package org.garagescience.deeplearning.nosgd.matrixlevel
+package org.garagescience.deeplearning.nosgd.layerlevel
 
 import org.jblas.DoubleMatrix
 

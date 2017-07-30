@@ -29,8 +29,6 @@ trait NeuralNetwork {
     scores.sum.toDouble / scores.length
   }
 
-
-
 }
 
 object NeuralNetwork {

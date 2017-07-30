@@ -1,11 +1,14 @@
-package org.garagescience.deeplearning.nosgd.matrixlevel
+package org.garagescience.deeplearning.nosgd.layerlevel
 
 import org.garagescience.deeplearning.nosgd.bca.Double2BitStringConvert._
-import org.garagescience.deeplearning.nosgd.bca.GerminalCentre
 import org.jblas.DoubleMatrix
 
-import scala.collection.immutable.IndexedSeq
+// okay, this is going to be for a single matrix, it just
+// mutatemutates it, no clonal pool - that's handled above ...
 
+// the class is created on the fly to hypermutate a matrix
+// then return it. it gets garbage collected at the end of
+// the iteration, so frees up memory.
 
 // TODO: we're doing this from the top, clean room design
 class MatrixGerminalCentre(val m: DoubleMatrix, val poolSize: Int = 20) {
@@ -16,24 +19,20 @@ class MatrixGerminalCentre(val m: DoubleMatrix, val poolSize: Int = 20) {
 
   protected def flipbit: Char = if (r.nextDouble >= 0.5) '1' else '0'
 
-  var clones: Array[DoubleMatrix] = (for {i <- 0 until poolSize} yield m).toArray
-
   // so, we need to Do Stuff here so that we get all the doubles out
   // of the matrix, mutate them, ADD THEM to the original values!
 
   // need to iterate over the whole matrix, get(row,col)
-  def germinate: Array[IndexedSeq[IndexedSeq[DoubleMatrix]]] = clones.
-    map { matrix =>
-      (0 until matrix.rows).map { row =>
-        (0 until matrix.columns).map { col =>
-          matrix.put(row, col,
-            somaticHypermutation(new StringBuffer(toBinaryString(matrix.get(row, col)))))
-        }
+  def germinate: DoubleMatrix = {
+    val mClone = m.dup()
+    (0 until m.rows).map { row =>
+      (0 until m.columns).map { col =>
+        mClone.put(row, col, somaticHypermutation(new StringBuffer(toBinaryString(m.get(row, col)))))
       }
     }
+    mClone
+  }
 
-
-  // so, we need to deconstruct/reconstruct the matrix
 
   def somaticHypermutation(_sb: StringBuffer): Double = {
 
