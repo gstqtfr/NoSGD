@@ -23,6 +23,10 @@ class LayerGerminalCentre(layerList: LayerList,
     layerList.layers.map { _.copy() }
   }
 
+  // TODO: okay, what we need is ... a bloody break from all these
+  // TODO: fucking interviews & phone calls. then i can relax &
+  // TODO: focus on what needs doing.
+
   // this simply hypermutates each matrix in the layer
   def germinate(layers: List[Layer]) = {
     layers.map { (layer: Layer) =>
