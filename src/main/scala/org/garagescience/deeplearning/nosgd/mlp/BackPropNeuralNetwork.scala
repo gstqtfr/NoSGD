@@ -14,7 +14,7 @@ class BackPropNeuralNetwork(override val layers: List[Layer],
     new BackPropNeuralNetwork(layers, objective, weightDecay)
 
 
-  // TODO: right, the stuff below is responsible for the main adaptation of the
+  // TODO: right, the stuff below is responsible for the main adaptation
   // TODO: of the network. it's here we get most of the error eval. & weight
   // TODO: modification. so once we crack this ...
 
