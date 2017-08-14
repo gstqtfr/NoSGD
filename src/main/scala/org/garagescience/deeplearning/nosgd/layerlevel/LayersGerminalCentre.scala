@@ -23,9 +23,6 @@ import scala.language.implicitConversions
 // b) hypermutate THE HELL out of the clone
 // c) return it for evaluation
 
-// ... actually, this thing should do a clone of the layers themselves
-// & return that ...
-
 class LayersGerminalCentre(layerList: List[Layer],
                            val alpha: Double,
                            val eta: Double,
@@ -34,16 +31,12 @@ class LayersGerminalCentre(layerList: List[Layer],
   // we create our clones - copies of the layer list param.
   // these will be subjected to hypermutation
 
-  // TODO: this can be val'd
-  var layerListClone: List[Layer] = { for {idx <- 0 until layerList.length}
-    yield layerList(idx).copy()
+  /*
+  def copyLayers: List[Layer] = {
+    for {idx <- 0 until layerList.length}
+      yield layerList(idx).copy()
   }.toList
-
-
-
-
-  def germinateLayer = ???
-
+  */
 
   /*
     // FIXME: what this needs to do is hypermutate the matices
@@ -55,35 +48,19 @@ class LayersGerminalCentre(layerList: List[Layer],
    */
 
 
+  private def modifyWeight(m1: DoubleMatrix,
+                           m2: DoubleMatrix): DoubleMatrix = m1.addi(m2.mul(alpha))
 
-
-
-
-  // TODO: add THE MO!!! we need THE MO!!!!
-  def modifyWeight(m1: DoubleMatrix, m2: DoubleMatrix): DoubleMatrix =
-    m1.addi(m2.mul(alpha))
-
-
-  // TODO: okay, what we need is ... a bloody break from all these
-  // TODO: fucking interviews & phone calls. then i can relax &
-  // TODO: focus on what needs doing.
 
   // this simply hypermutates each matrix in the layer
   // FIXME: the question is: where do we evaluate it?
-  def germinate(_layers: List[Layer]): List[DoubleMatrix] = {
-    _layers.map { (layer: Layer) =>
-      // FIXME: *addition* of hypermutated weights? prob. ...
-      // FIXME: the mo! do we have the mo? WE NEED THE MO!
-
-      // hypermutate the matrix
-      // FIXME: so, do we refactor this? object?
-     val clonedMatrix = new MatrixGerminalCentre(layer.weights).germinate
-      modifyWeight(layer.weights, clonedMatrix)
-    }
+  private def germinateLayer(layer: Layer): Layer = {
+    val clonedMatrix: DoubleMatrix = new MatrixGerminalCentre(layer.weights).germinate
+    val weights: DoubleMatrix = modifyWeight(layer.weights, clonedMatrix)
+    new Layer(weights, layer.activation)
   }
 
-
-
+  def germinate: List[Layer] = layerList.map { layer => germinateLayer(layer) }
 
 
 

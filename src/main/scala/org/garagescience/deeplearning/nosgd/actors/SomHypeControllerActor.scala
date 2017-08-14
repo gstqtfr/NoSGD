@@ -4,14 +4,9 @@ import akka.actor.{Actor, ActorRef, Props}
 import org.garagescience.deeplearning.nosgd.mlp.data.DataSet
 import scala.language.postfixOps
 
-// TODO: WE NEED A MORE SENSITIVE ERROR FUNCTION! - maybe ...
-
 // TODO: this doesn't need to be altered for e.g. FixedPointHypermutation
 // TODO: it's sufficiently general
 // TODO: which is nifty ...
-
-
-
 
 
 class SomHypeControllerActor(trainset: DataSet,

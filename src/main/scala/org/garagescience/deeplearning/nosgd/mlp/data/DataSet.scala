@@ -3,9 +3,12 @@ package org.garagescience.deeplearning.nosgd.mlp.data
 import java.awt.image.BufferedImage
 import java.io.File
 import javax.imageio.ImageIO
+
 import org.jblas.DoubleMatrix
+
 import scala.util.Random
 import scala.Array.canBuildFrom
+import scala.collection.immutable.IndexedSeq
 
 
 trait DataSet {
@@ -57,7 +60,7 @@ object ImageTileDataSet {
     }
     
     print("Loading tilesets '" + directory + "': ( ")
-    val trainingExamples = (0 until numClasses).flatMap {
+    val trainingExamples: IndexedSeq[ImageExample] = (0 until numClasses).flatMap {
       i =>
         val tileSet = new File(directory, i + ".jpg")
         print( i + " ")

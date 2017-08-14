@@ -41,9 +41,13 @@ object Layer {
   def apply(numOutputs: Int, activation: ActivationFunction): PartialLayer =
     new PartialLayer(numOutputs, activation)
 
+  // TODO: look at absMax here ... hmm .. interesting. have a think about the
+  // TODO: implications of this ... w \in [-1/100, 1/100] ...
   def randomWeights(numInputs: Int, numOutputs: Int, absMax: Double = 0.01): DoubleMatrix = {
     val r = DoubleMatrix.rand(numOutputs, numInputs)
     r.muli(2).subi(1).muli(absMax).transpose
   }
-
 }
+
+
+

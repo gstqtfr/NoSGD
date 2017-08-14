@@ -41,6 +41,7 @@ class Trainer(val numIterations: Int,
     // FIXME: weights - it HAS to - so we just find & use that!!!
     val loss = network.loss(trainingSet)
     println("Iteration:%5d, Loss: %.5f, Accuracy: %f".format(iteration + 1, loss, network.eval(trainingSet)))
+    // FIXME: gradientChecker == None with the current code, so this shouldn't do anything ...
     if ((iteration + 1) % evalIterations == 0) {
       for (check <- gradientChecker) {
         check(network, batch)
@@ -66,6 +67,10 @@ class Trainer(val numIterations: Int,
         // FIXME: so, how does it work?!? & can we nick it?!
 
         val batchGradients: ParSeq[Seq[DoubleMatrix]] = batches.par.map { network.errorGradients(_) }
+
+        // FIXME: this looks *terribly* complicated; however, all it's doing is adding together
+        // FIXME: sumGradient & gradient
+
         val sumGradients = batchGradients.reduce {
           (sumGradients, gradients) =>
             sumGradients.zip(gradients).map {

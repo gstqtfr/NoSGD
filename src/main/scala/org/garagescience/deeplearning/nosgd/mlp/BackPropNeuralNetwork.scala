@@ -34,7 +34,9 @@ class BackPropNeuralNetwork(override val layers: List[Layer],
         val priorDerivativeWeighted = if (i < layers.size - 1) {
           layers(i + 1).weights.mmul(priorDerivative)
         } else priorDerivative
-        val derivative = layers(i).activation.derivative(outputs(i).compositionOutput.get, outputs(i).activationOutput)
+        val derivative = layers(i).
+          activation.
+          derivative(outputs(i).compositionOutput.get, outputs(i).activationOutput)
         derivative.mul(priorDerivativeWeighted)
     }
 
